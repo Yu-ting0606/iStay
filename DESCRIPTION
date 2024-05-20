@@ -7,7 +7,10 @@ Maintainer: Anne Chao <chao@stat.nthu.edu.tw>
 Description: Provide a function to calculate the order q of stability for single assemblage. For multiple assemblage, there is an function to calculate order q of stability and synchrony. And also provide function to plot order q vs. stability (or synchrony).  
 License: GPL (>= 3)
 Imports: ggplot2,
-         stringr
+         stringr,
+         lme4,
+         lmerTest,
+         dplyr
 Encoding: UTF-8
 LazyData: true
 Depends: 

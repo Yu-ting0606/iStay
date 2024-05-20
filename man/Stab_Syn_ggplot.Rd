@@ -4,27 +4,41 @@
 \alias{Stab_Syn_ggplot}
 \title{Calculate stability and synchrony of the time series data for multiple assemblages.}
 \usage{
-Stab_Syn_ggplot(output)
+Stab_Syn_ggplot(output, x_variable, by_group = NULL, model = "LMM")
 }
 \arguments{
-\item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.}
+\item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.}
+
+\item{x_variable}{name of the column that uses as the x-axis in the plot.}
+
+\item{by_group}{name of the column that is a categorical variable for plotting points with different color. And it is required if \code{model = "LMM"}, model uses it as random effect for intercept and slope. Default is \code{NULL}.}
+
+\item{model}{specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear model with random effects for intercept and slope. Default is \code{model = "lm"}.}
 }
 \value{
-For an \code{Stab_Single} object, this function return a figure of order of q vs. stability.
-For an \code{Stab_Syn_Multiple} object, this function return two figures that are order of q vs. (Gamma, Alpha, Beta) stability and order of q vs. synchrony.
+For an \code{Stab_Single} object, this function return a figure of additional setting x-variable vs. stability.
+For an \code{Stab_Syn_Multiple} object, this function return two figures that are additional setting x-variable vs. (Gamma, Alpha, Beta) stability and additional setting x-variable vs. synchrony.
 }
 \description{
-\code{Stab_Syn_ggplot} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
+\code{Stab_Syn_ggplot} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
 }
 \examples{
 data("Jena_experiment_plant_data")
 
-output_single <- Stab_Single(data=Jena_experiment_plant_data[[1]],
-                             order.q=seq(0.2,2,0.2), Alltime=TRUE)
-Stab_Syn_ggplot(output_single)
+single_data <- do.call(rbind, Jena_experiment_plant_data)
+output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+single_plotdata <- data.frame(output_single,
+                              sowndiv=as.numeric(do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,2]),
+                              block=do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,1])
+
+Stab_Syn_ggplot(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+
 
 output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-                                  order.q=seq(0.2,2,0.2), Alltime=TRUE)
-Stab_Syn_ggplot(output_multi)
+                                  order.q=c(1,2), Alltime=TRUE)
+multi_plotdata <- data.frame(output_multi, sowndiv=rep(c(16,8,4,2,1),8),
+                             block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+
+Stab_Syn_ggplot(output=multi_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 
 }

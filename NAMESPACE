@@ -3,5 +3,8 @@
 export(Stab_Single)
 export(Stab_Syn_Multiple)
 export(Stab_Syn_ggplot)
+import(dplyr)
 import(ggplot2)
+import(lme4)
+import(lmerTest)
 import(stringr)

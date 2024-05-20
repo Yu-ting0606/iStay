@@ -13,7 +13,7 @@ Stab_Syn_Multiple(
 )
 }
 \arguments{
-\item{data}{can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames/matrices} with each dataframe representing a assemblages-by-times data. The names of dataframes can be added with "_" and property, that the property will be used as a factor to plot different colors in \code{Stab_Syn_ggplot} function.}
+\item{data}{can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames/matrices} with each dataframe representing a assemblages-by-times data.}
 
 \item{order.q}{a numerical vector specifying the orders of stability and synchrony. Default is c(1,2).}
 
@@ -32,7 +32,7 @@ a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stab
 \examples{
 data("Jena_experiment_plant_data")
 output <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-                            order.q=seq(0.2,2,0.2), Alltime=TRUE)
+                            order.q=c(1,2), Alltime=TRUE)
 output
 
 
