@@ -255,11 +255,99 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 
 
 
-
-
-#' Calculate stability and synchrony of the time series data for multiple assemblages.
+#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object with q-profile.
 #'
-#' \code{Stab_Syn_ggplot} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
+#' \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
+#'
+#' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
+#'
+#' @return For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
+#' For an \code{Stab_Syn_Multiple} object, this function return two figures which are q-profile for (Gamma, Alpha, Beta) stability and q-profile for synchrony.
+#'
+#'
+#' @examples
+#' data("Jena_experiment_plant_data")
+#'
+#' ## Single assemblage
+#' single_data <- do.call(rbind, Jena_experiment_plant_data)
+#' output_single <- Stab_Single(data=single_data[1:4,], order.q=seq(0.1,2,0.05), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_single)
+#'
+#'
+#' ## Multiple assemblages
+#' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[1:4],
+#'                                   order.q=seq(0.1,2,0.05), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_multi)
+#'
+#' @export
+
+ggStab_Syn_qprofile <- function(output){
+
+  if(length(which(colnames(output)=="Stability"))!=0){
+    if(length(which(colnames(output)=="Assemblage"))==0 | length(which(colnames(output)=="Order_q"))==0){
+      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+    }else{
+      outtype <- "single"
+    }
+  }else{
+    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Stab_Gamma"))==0
+       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiple"))==0 | length(which(colnames(output)=="Stab_Beta_additional"))==0　
+       | length(which(colnames(output)=="Synchrony"))==0){
+      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+    }else{
+      outtype <- "multiple"
+    }
+  }
+
+  if(outtype=="single"){
+    output$Assemblage <- factor(output$Assemblage, levels=unique(output$Assemblage))
+
+    plotout <- ggplot(data=output, aes(x=Order_q, y=Stability, color=Assemblage))+
+                  geom_line(linewidth=1.2)+
+                  ylab(label="Stability")+
+                  xlab(label="Order of q")+
+                  labs(color="Assemblage")+ theme_bw()+
+                  theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
+                        legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
+
+
+  }else{
+    output$Place <- factor(output$Place, levels=unique(output$Place))
+
+    plotout <- list()
+    stab_plotdat <- data.frame(Place=rep(output$Place,4),
+                               Order_q=rep(output$Order_q,4),
+                               Stability=c(output$Stab_Gamma,output$Stab_Alpha,output$Stab_Beta_multiple,output$Stab_Beta_additional),
+                               type=rep(c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"),each=nrow(output)))
+    stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"))
+
+    plotout[[1]] <- ggplot(data=stab_plotdat, aes(x=Order_q, y=Stability, color=Place))+
+                      geom_line(linewidth=1.2)+
+                      facet_wrap(.~type, nrow=2, scales = "free")+
+                      ylab(label="Stability")+
+                      xlab(label="Order of q")+
+                      labs(color="Place")+ theme_bw()+
+                      theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                            legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                            axis.title = element_text(size=16))
+
+    plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
+                      geom_line(linewidth=1.2)+
+                      ylab(label="Synchrony")+
+                      xlab(label="Order of q")+
+                      labs(color="Place")+ theme_bw()+
+                      theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
+                            legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
+
+  }
+  return(plotout)
+}
+
+
+
+#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an setting variable as x-axis.
+#'
+#' \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
 #'
 #' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
 #' @param x_variable name of the column that uses as the x-axis in the plot.
@@ -280,6 +368,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #' @examples
 #' data("Jena_experiment_plant_data")
 #'
+#' ## Single assemblage
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
 #' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
 #' single_plotdata <- data.frame(output_single,
@@ -288,17 +377,17 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' Stab_Syn_ggplot(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 #'
-#'
+#' ## Multiple assemblages
 #' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
 #'                                   order.q=c(1,2), Alltime=TRUE)
 #' multi_plotdata <- data.frame(output_multi, sowndiv=rep(c(16,8,4,2,1),8),
 #'                              block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 #'
-#' Stab_Syn_ggplot(output=multi_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+#' ggStab_Syn_analysis(output=multi_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 #'
 #' @export
 
-Stab_Syn_ggplot <- function(output, x_variable, by_group=NULL, model="LMM"){
+ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
   # x_variable_ori <- x_variable
   # if(is.null(by_group)==FALSE){by_group_ori <- by_group}
