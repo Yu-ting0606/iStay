@@ -588,7 +588,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                                 Stability = c(plotdata$Stab_Gamma, plotdata$Stab_Alpha, plotdata$Stab_Beta_multiple, plotdata$Stab_Beta_additional),
                                 pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BM, plotdata$pred_BA),
                                 sign = c(plotdata$sign_G, plotdata$sign_A, plotdata$sign_BM, plotdata$sign_BA),
-                                type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"), each = nrow(plotdata)),
+                                type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"), each = nrow(plotdata)),
                                 Xvariable = rep(plotdata$Xvariable,4))
 
     if(is.null(by_group)==FALSE){
@@ -598,7 +598,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
 
     plotdata_Stab$sign <- factor(plotdata_Stab$sign, levels=c("significant", "non-significant"))
-    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"))
+    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
     plotdata_Stab$Order_q <- as.factor(plotdata_Stab$Order_q)
 
 
@@ -608,8 +608,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     slope_text_Stab <- data.frame(slope = paste("slope = ",round(as.vector(as.matrix(lm_slope[,-5])),4),sep=""),
                                   Order_q = rep(rownames(lm_slope),4),
-                                  type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"), each = nrow(lm_slope)))
-    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"))
+                                  type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"), each = nrow(lm_slope)))
+    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
     slope_text_Stab$Order_q <- as.factor(slope_text_Stab$Order_q)
 
     slope_text_Syn <- data.frame(slope = paste("slope = ",round(lm_slope[,5],4),sep=""),
@@ -619,7 +619,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     tyG <- min(filter(plotdata_Stab, type=="Gamma")$Stability)
     tyA <- min(filter(plotdata_Stab, type=="Alpha")$Stability)
     tyBM <- max(filter(plotdata_Stab, type=="Beta (multiplicative)")$Stability)
-    tyBA <- max(filter(plotdata_Stab, type=="Beta (Additive)")$Stability)
+    tyBA <- max(filter(plotdata_Stab, type=="Beta (additive)")$Stability)
 
     if(is.null(by_group)==FALSE){
 
