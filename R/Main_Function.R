@@ -87,7 +87,7 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #' @param end_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.
 #'
 #'
-#' @return a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use multiple decomposition)", "Beta Stability (use additional decomposition)" and "Synchrony".
+#' @return a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use multiplicative decomposition)", "Beta Stability (use additive decomposition)" and "Synchrony".
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -318,8 +318,8 @@ ggStab_Syn_qprofile <- function(output){
     stab_plotdat <- data.frame(Place=rep(output$Place,4),
                                Order_q=rep(output$Order_q,4),
                                Stability=c(output$Stab_Gamma,output$Stab_Alpha,output$Stab_Beta_multiple,output$Stab_Beta_additional),
-                               type=rep(c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"),each=nrow(output)))
-    stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"))
+                               type=rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"),each=nrow(output)))
+    stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
 
     plotout[[1]] <- ggplot(data=stab_plotdat, aes(x=Order_q, y=Stability, color=Place))+
                       geom_line(linewidth=1.2)+
@@ -588,7 +588,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                                 Stability = c(plotdata$Stab_Gamma, plotdata$Stab_Alpha, plotdata$Stab_Beta_multiple, plotdata$Stab_Beta_additional),
                                 pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BM, plotdata$pred_BA),
                                 sign = c(plotdata$sign_G, plotdata$sign_A, plotdata$sign_BM, plotdata$sign_BA),
-                                type = rep(c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"), each = nrow(plotdata)),
+                                type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"), each = nrow(plotdata)),
                                 Xvariable = rep(plotdata$Xvariable,4))
 
     if(is.null(by_group)==FALSE){
@@ -598,7 +598,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
 
     plotdata_Stab$sign <- factor(plotdata_Stab$sign, levels=c("significant", "non-significant"))
-    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"))
+    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"))
     plotdata_Stab$Order_q <- as.factor(plotdata_Stab$Order_q)
 
 
@@ -608,8 +608,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     slope_text_Stab <- data.frame(slope = paste("slope = ",round(as.vector(as.matrix(lm_slope[,-5])),4),sep=""),
                                   Order_q = rep(rownames(lm_slope),4),
-                                  type = rep(c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"), each = nrow(lm_slope)))
-    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta (Multiple)", "Beta (Additional)"))
+                                  type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"), each = nrow(lm_slope)))
+    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (Additive)"))
     slope_text_Stab$Order_q <- as.factor(slope_text_Stab$Order_q)
 
     slope_text_Syn <- data.frame(slope = paste("slope = ",round(lm_slope[,5],4),sep=""),
