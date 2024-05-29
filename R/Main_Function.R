@@ -618,8 +618,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     tyG <- min(filter(plotdata_Stab, type=="Gamma")$Stability)
     tyA <- min(filter(plotdata_Stab, type=="Alpha")$Stability)
-    tyBM <- max(filter(plotdata_Stab, type=="Beta (Multiple)")$Stability)
-    tyBA <- max(filter(plotdata_Stab, type=="Beta (Additional)")$Stability)
+    tyBM <- max(filter(plotdata_Stab, type=="Beta (multiplicative)")$Stability)
+    tyBA <- max(filter(plotdata_Stab, type=="Beta (Additive)")$Stability)
 
     if(is.null(by_group)==FALSE){
 
