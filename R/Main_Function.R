@@ -451,10 +451,10 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
     lm_sign <- as.data.frame(lm_sign)
     lm_slope <- as.data.frame(lm_slope)
-    rownames(lm_sign) <- paste("p = ", unique(output$Order_q), sep="")
-    rownames(lm_slope) <- paste("p = ", unique(output$Order_q), sep="")
+    rownames(lm_sign) <- paste("q = ", unique(output$Order_q), sep="")
+    rownames(lm_slope) <- paste("q = ", unique(output$Order_q), sep="")
 
-    plotdata$Order_q <- paste("p = ", plotdata$Order_q, sep="")
+    plotdata$Order_q <- paste("q = ", plotdata$Order_q, sep="")
 
     plotdata$sign <- sapply(plotdata$Order_q, function(yy){
                         sign <- lm_sign[which(rownames(lm_sign)==yy),1]
@@ -562,10 +562,10 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
     lm_sign <- as.data.frame(lm_sign)
     lm_slope <- as.data.frame(lm_slope)
-    rownames(lm_sign) <- paste("p = ", unique(output$Order_q), sep="")
-    rownames(lm_slope) <- paste("p = ", unique(output$Order_q), sep="")
+    rownames(lm_sign) <- paste("q = ", unique(output$Order_q), sep="")
+    rownames(lm_slope) <- paste("q = ", unique(output$Order_q), sep="")
 
-    plotdata$Order_q <- paste("p = ", plotdata$Order_q, sep="")
+    plotdata$Order_q <- paste("q = ", plotdata$Order_q, sep="")
 
     plotdata$sign_G <- sapply(plotdata$Order_q, function(yy){
       lm_sign[which(rownames(lm_sign)==yy),1]
