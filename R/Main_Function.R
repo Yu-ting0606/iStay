@@ -227,7 +227,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     out <- as.matrix(sapply(order.q, function(qq) c(Stabillity_Multiple(subdata,q=qq), Synchrony(subdata,q=qq))))
     result <- data.frame(Place=rep(1, length(order.q)),
                          Order_q=order.q, t(out))
-    colnames(result)[3:7] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiple", "Stab_Beta_additional", "Synchrony")
+    colnames(result)[3:7] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiplicative", "Stab_Beta_additive", "Synchrony")
 
   }else{
 
@@ -240,7 +240,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
                             }
                             outout <- c(Stabillity_Multiple(subZZ,q=qq), Synchrony(subZZ,q=qq))
                             result <- data.frame(Order_q=qq, t(outout))
-                            colnames(result)[2:6] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiple", "Stab_Beta_additional", "Synchrony")
+                            colnames(result)[2:6] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiplicative", "Stab_Beta_additive", "Synchrony")
                             return(result)
                           })
                   cal2 <- do.call(rbind, cal)
@@ -291,7 +291,7 @@ ggStab_Syn_qprofile <- function(output){
     }
   }else{
     if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Stab_Gamma"))==0
-       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiple"))==0 | length(which(colnames(output)=="Stab_Beta_additional"))==0　
+       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiplicative"))==0 | length(which(colnames(output)=="Stab_Beta_additive"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }else{
@@ -317,7 +317,7 @@ ggStab_Syn_qprofile <- function(output){
     plotout <- list()
     stab_plotdat <- data.frame(Place=rep(output$Place,4),
                                Order_q=rep(output$Order_q,4),
-                               Stability=c(output$Stab_Gamma,output$Stab_Alpha,output$Stab_Beta_multiple,output$Stab_Beta_additional),
+                               Stability=c(output$Stab_Gamma,output$Stab_Alpha,output$Stab_Beta_multiplicative,output$Stab_Beta_additive),
                                type=rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"),each=nrow(output)))
     stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
 
@@ -375,7 +375,7 @@ ggStab_Syn_qprofile <- function(output){
 #'                               sowndiv=as.numeric(do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,2]),
 #'                               block=do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,1])
 #'
-#' Stab_Syn_ggplot(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+#' ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 #'
 #' ## Multiple assemblages
 #' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
@@ -398,7 +398,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
   }else{
     if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Stab_Gamma"))==0
-       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiple"))==0 | length(which(colnames(output)=="Stab_Beta_additional"))==0　
+       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiplicative"))==0 | length(which(colnames(output)=="Stab_Beta_additive"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }
@@ -516,10 +516,10 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
         MODEL_A <- lm(Stab_Alpha ~ Xvariable, subdata)
         sum_alpha <- summary(MODEL_A)
         pred_A <- predict(MODEL_A, newdata=subdata)
-        MODEL_BM <- lm(Stab_Beta_multiple ~ Xvariable, subdata)
+        MODEL_BM <- lm(Stab_Beta_multiplicative ~ Xvariable, subdata)
         sum_beta_multi <- summary(MODEL_BM)
         pred_BM <- predict(MODEL_BM, newdata=subdata)
-        MODEL_BA <- lm(Stab_Beta_additional ~ Xvariable, subdata)
+        MODEL_BA <- lm(Stab_Beta_additive ~ Xvariable, subdata)
         sum_beta_add <- summary(MODEL_BA)
         pred_BA <- predict(MODEL_BA, newdata=subdata)
         MODEL_S <- lm(Synchrony ~ Xvariable, subdata)
@@ -535,10 +535,10 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
         MODEL_A <- lmer(Stab_Alpha ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_alpha <- summary(MODEL_A)
         pred_A <- predict(MODEL_A, newdata=subdata, re.form=NA)
-        MODEL_BM <- lmer(Stab_Beta_multiple ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        MODEL_BM <- lmer(Stab_Beta_multiplicative ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_beta_multi <- summary(MODEL_BM)
         pred_BM <- predict(MODEL_BM, newdata=subdata, re.form=NA)
-        MODEL_BA <- lmer(Stab_Beta_additional ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        MODEL_BA <- lmer(Stab_Beta_additive ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_beta_add <- summary(MODEL_BA)
         pred_BA <- predict(MODEL_BA, newdata=subdata, re.form=NA)
         MODEL_S <- lmer(Synchrony ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
@@ -585,7 +585,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     plotdata_Stab <- data.frame(Place = rep(plotdata$Place,4),
                                 Order_q = rep(plotdata$Order_q,4),
-                                Stability = c(plotdata$Stab_Gamma, plotdata$Stab_Alpha, plotdata$Stab_Beta_multiple, plotdata$Stab_Beta_additional),
+                                Stability = c(plotdata$Stab_Gamma, plotdata$Stab_Alpha, plotdata$Stab_Beta_multiplicative, plotdata$Stab_Beta_additive),
                                 pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BM, plotdata$pred_BA),
                                 sign = c(plotdata$sign_G, plotdata$sign_A, plotdata$sign_BM, plotdata$sign_BA),
                                 type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"), each = nrow(plotdata)),

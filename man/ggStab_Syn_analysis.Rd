@@ -32,7 +32,7 @@ single_plotdata <- data.frame(output_single,
                               sowndiv=as.numeric(do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,2]),
                               block=do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,1])
 
-Stab_Syn_ggplot(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 
 ## Multiple assemblages
 output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
