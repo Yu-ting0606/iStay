@@ -259,7 +259,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 #'
-#' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
+#' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.
 #'
 #' @return For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
 #' For an \code{Stab_Syn_Multiple} object, this function return two figures which are q-profile for (Gamma, Alpha, Beta) stability and q-profile for synchrony.

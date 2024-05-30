@@ -7,7 +7,7 @@
 ggStab_Syn_qprofile(output)
 }
 \arguments{
-\item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.}
+\item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.}
 }
 \value{
 For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
