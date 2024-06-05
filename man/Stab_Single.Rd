@@ -24,7 +24,7 @@ Stab_Single(
 \item{end_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in the data.}
 }
 \value{
-a dataframe with columns "Assemblage", "Order_q" and "Stability".
+a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 }
 \description{
 \code{Stab_Single} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for single assemblage.

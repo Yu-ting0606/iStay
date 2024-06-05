@@ -10,7 +10,7 @@
 #'
 #'
 #'
-#' @return a dataframe with columns "Assemblage", "Order_q" and "Stability".
+#' @return a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -35,7 +35,7 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
     stop('Order q need larger than 0.')
   }
   if(sum(which(apply(data,1,sum)==0))){
-    stop('There is at least one assemblage whose time series data are all zeros.')
+    stop('There is at least one plot/community whose time series data are all zeros.')
   }
 
   if(Alltime!=TRUE){
@@ -69,6 +69,7 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
   result <- data.frame(Assemblage=rep(rownames(as.data.frame(data)), length(order.q)),
                        Order_q=rep(order.q, each=nrow(data)),
                        Stability=as.vector(t(stab)))
+  colnames(result)[1] <- c("Plot/Community")
   return(result)
 }
 
@@ -87,7 +88,7 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #' @param end_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.
 #'
 #'
-#' @return a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use multiplicative decomposition)", "Beta Stability (use additive decomposition)" and "Synchrony".
+#' @return a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use additive decomposition)" and "Synchrony".
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -228,6 +229,8 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     result <- data.frame(Place=rep(1, length(order.q)),
                          Order_q=order.q, t(out))
     colnames(result)[3:7] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiplicative", "Stab_Beta_additive", "Synchrony")
+    # revise_0605
+    result <- result[,-5]
 
   }else{
 
@@ -241,6 +244,8 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
                             outout <- c(Stabillity_Multiple(subZZ,q=qq), Synchrony(subZZ,q=qq))
                             result <- data.frame(Order_q=qq, t(outout))
                             colnames(result)[2:6] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiplicative", "Stab_Beta_additive", "Synchrony")
+                            # revise_0605
+                            result <- result[,-4]
                             return(result)
                           })
                   cal2 <- do.call(rbind, cal)
@@ -249,6 +254,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
            })
     result <- do.call(rbind, out)
   }
+  colnames(result) <- c("Place", "Order_q", "Gamma", "Alpha", "Beta", "Synchrony")
   return(result)
 
 }
@@ -284,14 +290,14 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 ggStab_Syn_qprofile <- function(output){
 
   if(length(which(colnames(output)=="Stability"))!=0){
-    if(length(which(colnames(output)=="Assemblage"))==0 | length(which(colnames(output)=="Order_q"))==0){
+    if(length(which(colnames(output)=="Plot/Community"))==0 | length(which(colnames(output)=="Order_q"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }else{
       outtype <- "single"
     }
   }else{
-    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Stab_Gamma"))==0
-       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiplicative"))==0 | length(which(colnames(output)=="Stab_Beta_additive"))==0　
+    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
+       | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }else{
@@ -300,13 +306,13 @@ ggStab_Syn_qprofile <- function(output){
   }
 
   if(outtype=="single"){
-    output$Assemblage <- factor(output$Assemblage, levels=unique(output$Assemblage))
+    output$`Plot/Community` <- factor(output$`Plot/Community`, levels=unique(output$`Plot/Community`))
 
-    plotout <- ggplot(data=output, aes(x=Order_q, y=Stability, color=Assemblage))+
+    plotout <- ggplot(data=output, aes(x=Order_q, y=Stability, color=`Plot/Community`))+
                   geom_line(linewidth=1.2)+
                   ylab(label="Stability")+
                   xlab(label="Order of q")+
-                  labs(color="Assemblage")+ theme_bw()+
+                  labs(color="Plot/Community")+ theme_bw()+
                   theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
                         legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
 
@@ -314,30 +320,30 @@ ggStab_Syn_qprofile <- function(output){
   }else{
     output$Place <- factor(output$Place, levels=unique(output$Place))
 
-    plotout <- list()
+    # plotout <- list()
     stab_plotdat <- data.frame(Place=rep(output$Place,4),
                                Order_q=rep(output$Order_q,4),
-                               Stability=c(output$Stab_Gamma,output$Stab_Alpha,output$Stab_Beta_multiplicative,output$Stab_Beta_additive),
-                               type=rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"),each=nrow(output)))
-    stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
+                               value=c(output$Gamma,output$Alpha,output$Beta,output$Synchrony),
+                               type=rep(c("Gamma","Alpha","Beta","Synchrony"),each=nrow(output)))
+    stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta","Synchrony"))
 
-    plotout[[1]] <- ggplot(data=stab_plotdat, aes(x=Order_q, y=Stability, color=Place))+
-                      geom_line(linewidth=1.2)+
-                      facet_wrap(.~type, nrow=2, scales = "free")+
-                      ylab(label="Stability")+
-                      xlab(label="Order of q")+
-                      labs(color="Place")+ theme_bw()+
-                      theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                            legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                            axis.title = element_text(size=16))
-
-    plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
-                      geom_line(linewidth=1.2)+
-                      ylab(label="Synchrony")+
-                      xlab(label="Order of q")+
-                      labs(color="Place")+ theme_bw()+
-                      theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
-                            legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
+    plotout <- ggplot(data=stab_plotdat, aes(x=Order_q, y=value, color=Place))+
+                    geom_line(linewidth=1.2)+
+                    facet_wrap(.~type, nrow=2, scales = "free")+
+                    ylab(label="Stability and Synchrony")+
+                    xlab(label="Order of q")+
+                    labs(color="Place")+ theme_bw()+
+                    theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                          legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                          axis.title = element_text(size=16))
+#
+#     plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
+#                       geom_line(linewidth=1.2)+
+#                       ylab(label="Synchrony")+
+#                       xlab(label="Order of q")+
+#                       labs(color="Place")+ theme_bw()+
+#                       theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
+#                             legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
 
   }
   return(plotout)
@@ -363,7 +369,7 @@ ggStab_Syn_qprofile <- function(output){
 #'
 #'
 #' @return For an \code{Stab_Single} object, this function return a figure of additional setting x-variable vs. stability.
-#' For an \code{Stab_Syn_Multiple} object, this function return two figures that are additional setting x-variable vs. (Gamma, Alpha, Beta) stability and additional setting x-variable vs. synchrony.
+#' For an \code{Stab_Syn_Multiple} object, this function return a figures that is additional setting x-variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -372,8 +378,9 @@ ggStab_Syn_qprofile <- function(output){
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
 #' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
 #' single_plotdata <- data.frame(output_single,
-#'                               sowndiv=as.numeric(do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,2]),
-#'                               block=do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,1])
+#'                               sowndiv=as.numeric(do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,2]),
+#'                               block=do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,1])
+#' colnames(single_plotdata)[1] <- c("Plot/Community")
 #'
 #' ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 #'
@@ -393,12 +400,12 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
   # if(is.null(by_group)==FALSE){by_group_ori <- by_group}
 
   if(length(which(colnames(output)=="Stability"))!=0){
-    if(length(which(colnames(output)=="Assemblage"))==0 | length(which(colnames(output)=="Order_q"))==0){
+    if(length(which(colnames(output)=="Plot/Community"))==0 | length(which(colnames(output)=="Order_q"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }
   }else{
-    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Stab_Gamma"))==0
-       | length(which(colnames(output)=="Stab_Alpha"))==0 | length(which(colnames(output)=="Stab_Beta_multiplicative"))==0 | length(which(colnames(output)=="Stab_Beta_additive"))==0　
+    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
+       | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }
@@ -510,16 +517,16 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
       if(model=="lm"){
         sign_num <- 4
 
-        MODEL_G <- lm(Stab_Gamma ~ Xvariable, subdata)
+        MODEL_G <- lm(Gamma ~ Xvariable, subdata)
         sum_gamma <- summary(MODEL_G)
         pred_G <- predict(MODEL_G, newdata=subdata)
-        MODEL_A <- lm(Stab_Alpha ~ Xvariable, subdata)
+        MODEL_A <- lm(Alpha ~ Xvariable, subdata)
         sum_alpha <- summary(MODEL_A)
         pred_A <- predict(MODEL_A, newdata=subdata)
-        MODEL_BM <- lm(Stab_Beta_multiplicative ~ Xvariable, subdata)
-        sum_beta_multi <- summary(MODEL_BM)
-        pred_BM <- predict(MODEL_BM, newdata=subdata)
-        MODEL_BA <- lm(Stab_Beta_additive ~ Xvariable, subdata)
+        # MODEL_BM <- lm(Stab_Beta_multiplicative ~ Xvariable, subdata)
+        # sum_beta_multi <- summary(MODEL_BM)
+        # pred_BM <- predict(MODEL_BM, newdata=subdata)
+        MODEL_BA <- lm(Beta ~ Xvariable, subdata)
         sum_beta_add <- summary(MODEL_BA)
         pred_BA <- predict(MODEL_BA, newdata=subdata)
         MODEL_S <- lm(Synchrony ~ Xvariable, subdata)
@@ -529,16 +536,16 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
       }else{
         sign_num <- 5
 
-        MODEL_G <- lmer(Stab_Gamma ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        MODEL_G <- lmer(Gamma ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_gamma <- summary(MODEL_G)
         pred_G <- predict(MODEL_G, newdata=subdata, re.form=NA)
-        MODEL_A <- lmer(Stab_Alpha ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        MODEL_A <- lmer(Alpha ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_alpha <- summary(MODEL_A)
         pred_A <- predict(MODEL_A, newdata=subdata, re.form=NA)
-        MODEL_BM <- lmer(Stab_Beta_multiplicative ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
-        sum_beta_multi <- summary(MODEL_BM)
-        pred_BM <- predict(MODEL_BM, newdata=subdata, re.form=NA)
-        MODEL_BA <- lmer(Stab_Beta_additive ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        # MODEL_BM <- lmer(Stab_Beta_multiplicative ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
+        # sum_beta_multi <- summary(MODEL_BM)
+        # pred_BM <- predict(MODEL_BM, newdata=subdata, re.form=NA)
+        MODEL_BA <- lmer(Beta ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
         sum_beta_add <- summary(MODEL_BA)
         pred_BA <- predict(MODEL_BA, newdata=subdata, re.form=NA)
         MODEL_S <- lmer(Synchrony ~ 1 + Xvariable + (1 + Xvariable | Gvariable), subdata)
@@ -549,16 +556,14 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
       lm_sign <- rbind(lm_sign,
                        c(gamma=ifelse(sum_gamma$coefficients[2,sign_num]<0.05, "significant", "non-significant"),
                          alpha=ifelse(sum_alpha$coefficients[2,sign_num]<0.05, "significant", "non-significant"),
-                         beta_multi=ifelse(sum_beta_multi$coefficients[2,sign_num]<0.05, "significant", "non-significant"),
                          beta_add=ifelse(sum_beta_add$coefficients[2,sign_num]<0.05, "significant", "non-significant"),
                          synchrony=ifelse(sum_syn$coefficients[2,sign_num]<0.05, "significant", "non-significant")))
       lm_slope <- rbind(lm_slope,
                         c(gamma=sum_gamma$coefficients[2,1],
                           alpha=sum_alpha$coefficients[2,1],
-                          beta_multi=sum_beta_multi$coefficients[2,1],
                           beta_add=sum_beta_add$coefficients[2,1],
                           synchrony=sum_syn$coefficients[2,1]))
-      plotdata <- rbind(plotdata, data.frame(subdata, pred_G=pred_G, pred_A=pred_A, pred_BM=pred_BM, pred_BA=pred_BA, pred_S=pred_S))
+      plotdata <- rbind(plotdata, data.frame(subdata, pred_G=pred_G, pred_A=pred_A, pred_BA=pred_BA, pred_S=pred_S))
     }
     lm_sign <- as.data.frame(lm_sign)
     lm_slope <- as.data.frame(lm_slope)
@@ -573,22 +578,19 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     plotdata$sign_A <- sapply(plotdata$Order_q, function(yy){
       lm_sign[which(rownames(lm_sign)==yy),2]
     })
-    plotdata$sign_BM <- sapply(plotdata$Order_q, function(yy){
+    plotdata$sign_BA <- sapply(plotdata$Order_q, function(yy){
       lm_sign[which(rownames(lm_sign)==yy),3]
     })
-    plotdata$sign_BA <- sapply(plotdata$Order_q, function(yy){
-      lm_sign[which(rownames(lm_sign)==yy),4]
-    })
     plotdata$sign_S <- sapply(plotdata$Order_q, function(yy){
-      lm_sign[which(rownames(lm_sign)==yy),5]
+      lm_sign[which(rownames(lm_sign)==yy),4]
     })
 
     plotdata_Stab <- data.frame(Place = rep(plotdata$Place,4),
                                 Order_q = rep(plotdata$Order_q,4),
-                                Stability = c(plotdata$Stab_Gamma, plotdata$Stab_Alpha, plotdata$Stab_Beta_multiplicative, plotdata$Stab_Beta_additive),
-                                pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BM, plotdata$pred_BA),
-                                sign = c(plotdata$sign_G, plotdata$sign_A, plotdata$sign_BM, plotdata$sign_BA),
-                                type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"), each = nrow(plotdata)),
+                                Stability = c(plotdata$Gamma, plotdata$Alpha, plotdata$Beta, plotdata$Synchrony),
+                                pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BA, plotdata$pred_S),
+                                sign = c(plotdata$sign_G, plotdata$sign_A, plotdata$sign_BA, plotdata$sign_S),
+                                type = rep(c("Gamma","Alpha","Beta","Synchrony"), each = nrow(plotdata)),
                                 Xvariable = rep(plotdata$Xvariable,4))
 
     if(is.null(by_group)==FALSE){
@@ -598,28 +600,29 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     }
 
     plotdata_Stab$sign <- factor(plotdata_Stab$sign, levels=c("significant", "non-significant"))
-    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
+    plotdata_Stab$type <- factor(plotdata_Stab$type, levels = c("Gamma","Alpha","Beta","Synchrony"))
     plotdata_Stab$Order_q <- as.factor(plotdata_Stab$Order_q)
 
 
-    plotdata$sign_S <- factor(plotdata$sign_S, levels=c("significant", "non-significant"))
-    plotdata$Order_q <- as.factor(plotdata$Order_q)
+    # plotdata$sign_S <- factor(plotdata$sign_S, levels=c("significant", "non-significant"))
+    # plotdata$Order_q <- as.factor(plotdata$Order_q)
 
 
-    slope_text_Stab <- data.frame(slope = paste("slope = ",round(as.vector(as.matrix(lm_slope[,-5])),4),sep=""),
+    slope_text_Stab <- data.frame(slope = paste("slope = ",round(as.vector(as.matrix(lm_slope)),4),sep=""),
                                   Order_q = rep(rownames(lm_slope),4),
-                                  type = rep(c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"), each = nrow(lm_slope)))
-    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta (multiplicative)", "Beta (additive)"))
+                                  type = rep(c("Gamma","Alpha","Beta","Synchrony"), each = nrow(lm_slope)))
+    slope_text_Stab$type <- factor(slope_text_Stab$type, levels = c("Gamma","Alpha","Beta","Synchrony"))
     slope_text_Stab$Order_q <- as.factor(slope_text_Stab$Order_q)
 
-    slope_text_Syn <- data.frame(slope = paste("slope = ",round(lm_slope[,5],4),sep=""),
-                                 Order_q = rownames(lm_slope))
-    slope_text_Syn$Order_q <- as.factor(slope_text_Syn$Order_q)
+    # slope_text_Syn <- data.frame(slope = paste("slope = ",round(lm_slope[,5],4),sep=""),
+    #                              Order_q = rownames(lm_slope))
+    # slope_text_Syn$Order_q <- as.factor(slope_text_Syn$Order_q)
 
     tyG <- min(filter(plotdata_Stab, type=="Gamma")$Stability)
     tyA <- min(filter(plotdata_Stab, type=="Alpha")$Stability)
-    tyBM <- max(filter(plotdata_Stab, type=="Beta (multiplicative)")$Stability)
-    tyBA <- max(filter(plotdata_Stab, type=="Beta (additive)")$Stability)
+    # tyBM <- max(filter(plotdata_Stab, type=="Beta (multiplicative)")$Stability)
+    tyBA <- max(filter(plotdata_Stab, type=="Beta")$Stability)
+    tyS <- min(filter(plotdata_Stab, type=="Synchrony")$Stability)
 
     if(is.null(by_group)==FALSE){
 
@@ -630,30 +633,30 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                     facet_grid(type~Order_q, scales = "free_y")+
                     labs(linetype="", color=by_group)+
                     xlab(label=x_variable)+
-                    ylab(label="Stability")+ theme_bw()+
+                    ylab(label="Stability and Synchrony")+ theme_bw()+
                     geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
                               x=max(plotdata_Stab$Xvariable),
-                              y=rep(c(tyG, tyA, tyBM, tyBA),each=2), size=5,
-                              hjust=1, vjust=rep(c(0.1,1.1),each=4))+
+                              y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
+                              hjust=1, vjust=rep(c(0.1,0.1,1.1,0.1),each=2))+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                           axis.title = element_text(size=16))
 
-      plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
-                    geom_point(aes(color=Gvariable), size=2.7)+
-                    geom_line(aes(x=Xvariable, y=pred_S, linetype = sign_S), linewidth=1.2, color="black")+
-                    scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
-                    facet_wrap(.~Order_q, scales = "fixed")+
-                    labs(linetype="", color=by_group)+
-                    xlab(label=x_variable)+
-                    ylab(label="Synchrony")+ theme_bw()+
-                    geom_text(data=slope_text_Syn, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata$Xvariable),
-                              y=min(plotdata$Synchrony), size=5,
-                              hjust=1, vjust=0.1)+
-                    theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                          legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))
+      # plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
+      #               geom_point(aes(color=Gvariable), size=2.7)+
+      #               geom_line(aes(x=Xvariable, y=pred_S, linetype = sign_S), linewidth=1.2, color="black")+
+      #               scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+      #               facet_wrap(.~Order_q, scales = "fixed")+
+      #               labs(linetype="", color=by_group)+
+      #               xlab(label=x_variable)+
+      #               ylab(label="Synchrony")+ theme_bw()+
+      #               geom_text(data=slope_text_Syn, aes(x = -Inf, y = -Inf, label = slope),
+      #                         x=max(plotdata$Xvariable),
+      #                         y=min(plotdata$Synchrony), size=5,
+      #                         hjust=1, vjust=0.1)+
+      #               theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+      #                     legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+      #                     axis.title = element_text(size=16))
 
 
     }else{
@@ -665,35 +668,35 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                       facet_grid(type~Order_q, scales = "free_y")+
                       labs(linetype="")+
                       xlab(label=x_variable)+
-                      ylab(label="Stability")+ theme_bw()+
+                      ylab(label="Stability and Synchrony")+ theme_bw()+
                       geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
                                 x=max(plotdata_Stab$Xvariable),
-                                y=rep(c(tyG, tyA, tyBM, tyBA),each=2), size=5,
+                                y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
                                 hjust=1, vjust=rep(c(0.1,1.1),each=4))+
                       theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                             legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                             axis.title = element_text(size=16))
 
-      plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
-                      geom_point(size=2.7)+
-                      geom_line(aes(x=Xvariable, y=pred_S, linetype = sign_S), linewidth=1.2, color="black")+
-                      scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
-                      facet_wrap(.~Order_q, scales = "fixed")+
-                      labs(linetype="")+
-                      xlab(label=x_variable)+
-                      ylab(label="Synchrony")+ theme_bw()+
-                      geom_text(data=slope_text_Syn, aes(x = -Inf, y = -Inf, label = slope),
-                                x=max(plotdata$Xvariable),
-                                y=min(plotdata$Synchrony), size=5,
-                                hjust=1, vjust=0.1)+
-                      theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                            legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                            axis.title = element_text(size=16))
+      # plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
+      #                 geom_point(size=2.7)+
+      #                 geom_line(aes(x=Xvariable, y=pred_S, linetype = sign_S), linewidth=1.2, color="black")+
+      #                 scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+      #                 facet_wrap(.~Order_q, scales = "fixed")+
+      #                 labs(linetype="")+
+      #                 xlab(label=x_variable)+
+      #                 ylab(label="Synchrony")+ theme_bw()+
+      #                 geom_text(data=slope_text_Syn, aes(x = -Inf, y = -Inf, label = slope),
+      #                           x=max(plotdata$Xvariable),
+      #                           y=min(plotdata$Synchrony), size=5,
+      #                           hjust=1, vjust=0.1)+
+      #                 theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+      #                       legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+      #                       axis.title = element_text(size=16))
 
     }
-    plotout <- list()
-    plotout[[1]] <- plotout1
-    plotout[[2]] <- plotout2
+    plotout <- plotout1
+    # plotout[[1]] <- plotout1
+    # plotout[[2]] <- plotout2
   }
 
   return(plotout)

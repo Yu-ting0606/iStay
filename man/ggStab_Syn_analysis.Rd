@@ -17,7 +17,7 @@ ggStab_Syn_analysis(output, x_variable, by_group = NULL, model = "LMM")
 }
 \value{
 For an \code{Stab_Single} object, this function return a figure of additional setting x-variable vs. stability.
-For an \code{Stab_Syn_Multiple} object, this function return two figures that are additional setting x-variable vs. (Gamma, Alpha, Beta) stability and additional setting x-variable vs. synchrony.
+For an \code{Stab_Syn_Multiple} object, this function return a figures that is additional setting x-variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 }
 \description{
 \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
@@ -29,8 +29,9 @@ data("Jena_experiment_plant_data")
 single_data <- do.call(rbind, Jena_experiment_plant_data)
 output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
 single_plotdata <- data.frame(output_single,
-                              sowndiv=as.numeric(do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,2]),
-                              block=do.call(rbind, strsplit(output_single$Assemblage, "[._]+"))[,1])
+                              sowndiv=as.numeric(do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,2]),
+                              block=do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,1])
+colnames(single_plotdata)[1] <- c("Plot/Community")
 
 ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
 
