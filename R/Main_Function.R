@@ -271,6 +271,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #' @param start_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the start column of time in the data.
 #' @param end_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in the data.
 #'
+#' @import dplyr
 #'
 #' @return a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "Beta (normalized)".
 #'
@@ -281,19 +282,19 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #' data("Jena_hierarchical_mat")
 #' Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
 #' output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-#'                    q=c(1,2), Alltime=TRUE)
+#'                     order.q = c(1,2), Alltime=TRUE)
 #' output
 #'
 #' @export
 
-Stab_Hier <- function(data, mat, q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
+Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
   if(Alltime==FALSE){
     data <- data[,start_T:end_T]
   }
   TT <- ncol(data)
 
   gamma_zz <- apply(data, 2, sum)
-  gamma <- sapply(q, function(qq){
+  gamma <- sapply(order.q, function(qq){
     if(qq==1){
       gamma_zz <- gamma_zz[gamma_zz!=0]
       gamma <- (-1)*sum((gamma_zz/sum(gamma_zz))*log((gamma_zz/sum(gamma_zz))))/log(TT)
@@ -301,7 +302,7 @@ Stab_Hier <- function(data, mat, q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NUL
       gamma <- (1-sum((gamma_zz/sum(gamma_zz))^qq))/(1-TT^(1-qq))
     }
   })
-  gamma <- data.frame(hier=ncol(mat)+1, order_q=q, gamma_value=gamma)
+  gamma <- data.frame(hier=ncol(mat)+1, order_q=order.q, gamma_value=gamma)
 
 
   hier_i_alphaanddiff <- function(data, mat, q, i){
@@ -413,15 +414,15 @@ Stab_Hier <- function(data, mat, q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NUL
 
   stab <- c()
   for(ii in 1:ncol(mat)){
-    stab <- rbind(stab, hier_i_alphaanddiff(data, mat, q, ii))
+    stab <- rbind(stab, hier_i_alphaanddiff(data, mat, order.q, ii))
   }
 
   gamma_value <- rbind(gamma, gamma, data.frame(stab[,1:2], gamma_value=stab[,3]))
   gamma_value <- filter(gamma_value, hier!=1)
-  gamma_value$hier <- rep(c((ncol(mat)+1):1), each=length(q))
+  gamma_value$hier <- rep(c((ncol(mat)+1):1), each=length(order.q))
 
-  alpha_value <- c(rep(NA,length(q)), stab[,3])
-  beta_max <- c(rep(NA,length(q)), stab[,4])
+  alpha_value <- c(rep(NA,length(order.q)), stab[,3])
+  beta_max <- c(rep(NA,length(order.q)), stab[,4])
   alldata <- cbind(gamma_value, alpha_value, beta_max)
 
   alldata <- cbind(alldata[,1:4], beta_value=(alldata[,3]-alldata[,4])/alldata[,5])
