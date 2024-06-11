@@ -18,6 +18,8 @@ For an \code{Stab_Syn_Multiple} object, this function return two figures which a
 }
 \examples{
 data("Jena_experiment_plant_data")
+data("Jena_hierarchical_data")
+data("Jena_hierarchical_mat")
 
 ## Single assemblage
 single_data <- do.call(rbind, Jena_experiment_plant_data)
@@ -29,5 +31,12 @@ ggStab_Syn_qprofile(output=output_single)
 output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[1:4],
                                   order.q=seq(0.1,2,0.05), Alltime=TRUE)
 ggStab_Syn_qprofile(output=output_multi)
+
+
+## Hierarchies
+Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
+output_hier <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
+                         order.q = c(1,2), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_hier)
 
 }

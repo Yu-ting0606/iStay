@@ -33,7 +33,6 @@ a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "
 \code{Stab_Hier} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
 }
 \examples{
-library(dplyr)
 
 data("Jena_hierarchical_data")
 data("Jena_hierarchical_mat")

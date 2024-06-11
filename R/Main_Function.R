@@ -276,7 +276,6 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #' @return a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "Beta (normalized)".
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' data("Jena_hierarchical_data")
 #' data("Jena_hierarchical_mat")
@@ -440,12 +439,16 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.
 #'
+#' @import ggpubr
+#'
 #' @return For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
 #' For an \code{Stab_Syn_Multiple} object, this function return two figures which are q-profile for (Gamma, Alpha, Beta) stability and q-profile for synchrony.
 #'
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
+#' data("Jena_hierarchical_data")
+#' data("Jena_hierarchical_mat")
 #'
 #' ## Single assemblage
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
@@ -458,21 +461,35 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'                                   order.q=seq(0.1,2,0.05), Alltime=TRUE)
 #' ggStab_Syn_qprofile(output=output_multi)
 #'
+#'
+#' ## Hierarchies
+#' Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
+#' output_hier <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
+#'                          order.q = c(1,2), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_hier)
+#'
 #' @export
 
 ggStab_Syn_qprofile <- function(output){
 
   if(length(which(colnames(output)=="Stability"))!=0){
     if(length(which(colnames(output)=="Plot/Community"))==0 | length(which(colnames(output)=="Order_q"))==0){
-      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
     }else{
       outtype <- "single"
+    }
+  }else if(length(which(colnames(output)=="Hier"))!=0){
+    if(length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0 | length(which(colnames(output)=="Alpha"))==0
+       | length(which(colnames(output)=="Beta (normalized)"))==0){
+      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
+    }else{
+      outtype <- "hier"
     }
   }else{
     if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
        | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
-      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
     }else{
       outtype <- "multiple"
     }
@@ -488,6 +505,55 @@ ggStab_Syn_qprofile <- function(output){
                   labs(color="Plot/Community")+ theme_bw()+
                   theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
                         legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
+
+
+  }else if(outtype=="hier"){
+    maxhier <- max(output$Hier)
+    hier_num <- unique(output$Hier)
+    qq <- unique(output$Order_q)
+    type_name <- paste("S_alpha","(",hier_num[-1],")", sep="")
+    type_diff <- paste("hier",hier_num[-1]+1,"-",hier_num[-1], sep="")
+
+    plotdat1 <- data.frame(Order_q = rep(qq, length(hier_num)),
+                           Stability = c(filter(output, Hier==maxhier)$Gamma, filter(output, Hier!=maxhier)$Alpha),
+                           type = rep(c("S_gamma",type_name), each=length(qq)))
+    plotdat1$type <- factor(plotdat1$type, levels=c("S_gamma",type_name))
+
+    plotdat2 <- data.frame(Order_q = rep(qq, (length(hier_num)-1)),
+                           Diff = filter(output, Hier!=maxhier)$`Beta (normalized)`,
+                           type = rep(type_diff, each=length(qq)))
+    plotdat2$type <- factor(plotdat2$type, levels=type_diff)
+
+    plotout1 <- ggplot(data=plotdat1, aes(x=Order_q, y=Stability, color=type))+
+                  geom_line(linewidth=1.2)+
+                  ylab("Hierarchical Stability")+
+                  labs(color="")+
+                  theme_bw()+
+                  theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
+                        plot.margin = unit(c(1,1,1,1), "cm"),
+                        legend.key.size = unit(0.8, 'cm'),
+                        legend.text = element_text(size=12),legend.position="bottom")
+
+    if(length(type_name)+1>=4){
+      plotout1 <- plotout1 + guides(color=guide_legend(nrow=2,byrow=TRUE))
+    }
+
+    plotout2 <- ggplot(data=plotdat2, aes(x=Order_q, y=Diff, color=type))+
+                  geom_line(linewidth=1.2)+
+                  ylab(label=expression(paste("Difference of Stability\n  (Normalized Beta)")))+
+                  labs(color="")+
+                  theme_bw()+
+                  theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
+                        plot.margin = unit(c(1,1,1,1), "cm"),
+                        legend.key.size = unit(0.8, 'cm'),
+                        legend.text = element_text(size=12),legend.position="bottom")
+
+    if(length(type_diff)>=4){
+      plotout2 <- plotout2 + guides(color=guide_legend(nrow=2,byrow=TRUE))
+    }
+
+
+    plotout <- ggarrange(plotout1, plotout2, ncol = 2)
 
 
   }else{
