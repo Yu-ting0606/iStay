@@ -4,20 +4,27 @@
 \alias{Stab_Hier}
 \title{Calculate stability of the time series data for hierarchical structure.}
 \usage{
-Stab_Hier(data, mat, q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
+Stab_Hier(
+  data,
+  mat,
+  order.q = c(1, 2),
+  Alltime = TRUE,
+  start_T = NULL,
+  end_T = NULL
+)
 }
 \arguments{
 \item{data}{can be input as \code{data.frame/matrix} (assemblages by times).}
 
 \item{mat}{hierarchical structure of data.}
 
+\item{order.q}{a numerical vector specifying the orders of stability. Default is c(1,2).}
+
 \item{Alltime}{\code{TRUE} or \code{FALSE}, to decide whether to use all the times in the data.}
 
 \item{start_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the start column of time in the data.}
 
 \item{end_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in the data.}
-
-\item{order.q}{a numerical vector specifying the orders of stability. Default is c(1,2).}
 }
 \value{
 a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "Beta (normalized)".
@@ -32,7 +39,7 @@ data("Jena_hierarchical_data")
 data("Jena_hierarchical_mat")
 Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
 output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-                   q=c(1,2), Alltime=TRUE)
+                    order.q = c(1,2), Alltime=TRUE)
 output
 
 }
