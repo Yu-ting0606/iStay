@@ -358,21 +358,41 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
         return(zz)
       })
 
-      subdat2 <- lapply(take2, function(tak2){
-        zz <- subdat[tak2]
-        zz <- do.call(rbind, zz)
-        vv <- sapply(q, function(qq){
-          if(qq==1){
-            zz[which(zz==0)] <- 10^(-15)
-            value <- (-1)*sum((zz/sum(zz))*log(zz/sum(zz)))*(sum(zz)/sum(data))/log(TT)
-          }else{
-            value <- ((1-sum((zz/sum(zz))^qq))*(sum(zz)/sum(data)))/(1-TT^(1-qq))
-          }
+      if(i==2){
+        subdat2 <- apply(take2, 2, function(tak2) {
+          zz <- subdat[tak2]
+          zz <- do.call(rbind, zz)
+          vv <- sapply(q, function(qq) {
+            if (qq == 1) {
+              zz[which(zz == 0)] <- 10^(-15)
+              value <- (-1) * sum((zz/sum(zz)) * log(zz/sum(zz))) *
+                (sum(zz)/sum(data))/log(TT)
+            }else {
+              value <- ((1 - sum((zz/sum(zz))^qq)) * (sum(zz)/sum(data)))/(1 - TT^(1 - qq))
+            }
+          })
+          return(vv)
         })
-        return(vv)
-      })
+        subdat2 <- t(subdat2)
 
-      subdat2 <- do.call(rbind, subdat2)
+      }else{
+        subdat2 <- lapply(take2, function(tak2) {
+          zz <- subdat[tak2]
+          zz <- do.call(rbind, zz)
+          vv <- sapply(q, function(qq) {
+            if (qq == 1) {
+              zz[which(zz == 0)] <- 10^(-15)
+              value <- (-1) * sum((zz/sum(zz)) * log(zz/sum(zz))) *
+                (sum(zz)/sum(data))/log(TT)
+            }else {
+              value <- ((1 - sum((zz/sum(zz))^qq)) * (sum(zz)/sum(data)))/(1 - TT^(1 - qq))
+            }
+          })
+          return(vv)
+        })
+        subdat2 <- do.call(rbind, subdat2)
+      }
+
       if(length(q)==1){
         subdat2 <- sum(subdat2)
       }else{
