@@ -10,7 +10,8 @@ Imports: ggplot2,
          stringr,
          lme4,
          lmerTest,
-         dplyr
+         dplyr,
+         ggpubr
 Encoding: UTF-8
 LazyData: true
 Depends: 
