@@ -297,8 +297,10 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
   TT <- ncol(data)
 
   del <- which(apply(data,1,sum)==0)
-  data <- data[-del,]
-  mat <- mat[-del,]
+  if(length(del)!=0){
+    data <- data[-del,]
+    mat <- mat[-del,]
+  }
 
   data <- as.matrix(data)
   data[which(data==0)] <- 10^(-15)
