@@ -358,15 +358,15 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
         return(zz)
       })
 
-      if(i==2){
+      if(i==2 & length(index2)<=2){
+
         subdat2 <- apply(take2, 2, function(tak2) {
           zz <- subdat[tak2]
           zz <- do.call(rbind, zz)
           vv <- sapply(q, function(qq) {
             if (qq == 1) {
               zz[which(zz == 0)] <- 10^(-15)
-              value <- (-1) * sum((zz/sum(zz)) * log(zz/sum(zz))) *
-                (sum(zz)/sum(data))/log(TT)
+              value <- (-1)*sum((zz/sum(zz))*log(zz/sum(zz)))*(sum(zz)/sum(data))/log(TT)
             }else {
               value <- ((1 - sum((zz/sum(zz))^qq)) * (sum(zz)/sum(data)))/(1 - TT^(1 - qq))
             }
@@ -382,8 +382,7 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
           vv <- sapply(q, function(qq) {
             if (qq == 1) {
               zz[which(zz == 0)] <- 10^(-15)
-              value <- (-1) * sum((zz/sum(zz)) * log(zz/sum(zz))) *
-                (sum(zz)/sum(data))/log(TT)
+              value <- (-1)*sum((zz/sum(zz))*log(zz/sum(zz)))*(sum(zz)/sum(data))/log(TT)
             }else {
               value <- ((1 - sum((zz/sum(zz))^qq)) * (sum(zz)/sum(data)))/(1 - TT^(1 - qq))
             }
