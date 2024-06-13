@@ -49,8 +49,8 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 
   stability <- function(vector,q){
     K <- length(vector)
+    vector[which(vector==0)] <- 10^(-15)
     if(q==1){
-      vector <- vector[vector!=0]
       H <- sum((vector/sum(vector))*log(vector/sum(vector)))*(-1)
       out <- H/log(K)
     }else{
@@ -138,13 +138,15 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 
   Stabillity_Multiple <- function(ZZ,q){
     K <- ncol(ZZ)
-    ZZ[is.na(ZZ)] <- 0
+    #ZZ[is.na(ZZ)] <- 0
 
     z_iplus <- apply(ZZ,1,sum)
     if(length(which(z_iplus==0))!=0){
       ZZ <- ZZ[-which(z_iplus==0),]
       z_iplus <- z_iplus[z_iplus!=0]
     }
+    ZZ <- as.matrix(ZZ)
+    ZZ[which(ZZ==0)] <- 10^(-15)
 
     z_plusk <- apply(ZZ,2,sum)
     z_plusplus <- sum(ZZ)
@@ -172,12 +174,14 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
   Synchrony <- function(ZZ,q,type="C"){
     M <- nrow(ZZ)
     K <- ncol(ZZ)
-    ZZ[is.na(ZZ)] <- 0
+    #ZZ[is.na(ZZ)] <- 0
     z_iplus <- apply(ZZ,1,sum)
     if(length(which(z_iplus==0))!=0){
       ZZ <- ZZ[-which(z_iplus==0),]
       z_iplus <- z_iplus[z_iplus!=0]
     }
+    ZZ <- as.matrix(ZZ)
+    ZZ[which(ZZ==0)] <- 10^(-15)
 
     if(length(z_iplus)<=1){
       value <- NA
@@ -291,6 +295,14 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
     data <- data[,start_T:end_T]
   }
   TT <- ncol(data)
+
+  del <- which(apply(data,1,sum)==0)
+  data <- data[-del,]
+  mat <- mat[-del,]
+
+  data <- as.matrix(data)
+  data[which(data==0)] <- 10^(-15)
+  data <- as.data.frame(data)
 
   gamma_zz <- apply(data, 2, sum)
   gamma <- sapply(order.q, function(qq){
