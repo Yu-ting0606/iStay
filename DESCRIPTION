@@ -1,10 +1,10 @@
 Package: iStay
 Type: Package
-Title: Measuring stability and synchrony
+Title: Measuring ecological stability and synchrony
 Version: 0.1.0
 Author: Anne Chao, Yu-Ting Huang
 Maintainer: Anne Chao <chao@stat.nthu.edu.tw>
-Description: Provide a function to calculate the order q of stability for single assemblage. For multiple assemblage, there is an function to calculate order q of stability and synchrony. And also provide function to plot order q vs. stability (or synchrony).  
+Description: Provide simple functions to (i) calculate the order q of stability for single assemblage, (ii) calculate order q of stability and synchrony for multiple assemblages, and (iii) calculate stability of hierarchical data. This package also provide functions to plot stability (or synchrony) profile, and based on the diversity (or other) variable, analysis and plot the relationship between stability (and synchrony) and diversity (or other) variable.  
 License: GPL (>= 3)
 Imports: ggplot2,
          stringr,

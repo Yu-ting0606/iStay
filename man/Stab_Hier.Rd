@@ -14,7 +14,7 @@ Stab_Hier(
 )
 }
 \arguments{
-\item{data}{can be input as \code{data.frame/matrix} (assemblages by times).}
+\item{data}{can be input as \code{data.frame} (assemblages by times).}
 
 \item{mat}{hierarchical structure of data.}
 
@@ -27,7 +27,7 @@ Stab_Hier(
 \item{end_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in the data.}
 }
 \value{
-a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "Beta (normalized)".
+a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha" and "Beta (normalized)".
 }
 \description{
 \code{Stab_Hier} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
@@ -36,7 +36,6 @@ a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "
 
 data("Jena_hierarchical_data")
 data("Jena_hierarchical_mat")
-Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
 output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
                     order.q = c(1,2), Alltime=TRUE)
 output

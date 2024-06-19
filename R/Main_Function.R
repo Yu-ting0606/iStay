@@ -2,7 +2,7 @@
 #'
 #' \code{Stab_Single} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for single assemblage.
 #'
-#' @param data can be input as a \code{vector} of time series data, or \code{data.frame/matrix} (assemblages by times).
+#' @param data can be input as a \code{vector} of time series data, or \code{data.frame} (assemblages by times).
 #' @param order.q a numerical vector specifying the orders of stability. Default is c(1,2).
 #' @param Alltime \code{TRUE} or \code{FALSE}, to decide whether to use all the times in the data.
 #' @param start_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the start column of time in the data.
@@ -81,14 +81,14 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #'
 #' \code{Stab_Syn_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
 #'
-#' @param data can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames/matrices} with each dataframe representing a assemblages-by-times data.
+#' @param data can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames} with each dataframe representing a assemblages-by-times data.
 #' @param order.q a numerical vector specifying the orders of stability and synchrony. Default is c(1,2).
 #' @param Alltime \code{TRUE} or \code{FALSE}, to decide whether to use all the times in (every) dataframe.
 #' @param start_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the start column of time in (every) dataframe.
 #' @param end_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.
 #'
 #'
-#' @return a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use additive decomposition)" and "Synchrony".
+#' @return a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -268,7 +268,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' \code{Stab_Hier} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
 #'
-#' @param data can be input as \code{data.frame/matrix} (assemblages by times).
+#' @param data can be input as \code{data.frame} (assemblages by times).
 #' @param mat hierarchical structure of data.
 #' @param order.q a numerical vector specifying the orders of stability. Default is c(1,2).
 #' @param Alltime \code{TRUE} or \code{FALSE}, to decide whether to use all the times in the data.
@@ -277,13 +277,12 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' @import dplyr
 #'
-#' @return a dataframe with columns "Hier", "Order_q", and stabiltiy "Gamma", "Alpha" and "Beta (normalized)".
+#' @return a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha" and "Beta (normalized)".
 #'
 #' @examples
 #'
 #' data("Jena_hierarchical_data")
 #' data("Jena_hierarchical_mat")
-#' Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
 #' output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
 #'                     order.q = c(1,2), Alltime=TRUE)
 #' output
@@ -466,16 +465,17 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 
 
 
-#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object with q-profile.
+#' ggplot2 extension for a Stab_Single, Stab_Syn_Multiple or Stab_Hier object with q-profile.
 #'
-#' \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
+#' \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 #'
-#' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.
+#' @param output the output obtained from \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}.
 #'
 #' @import ggpubr
 #'
-#' @return For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
-#' For an \code{Stab_Syn_Multiple} object, this function return two figures which are q-profile for (Gamma, Alpha, Beta) stability and q-profile for synchrony.
+#' @return For a \code{Stab_Single} object, this function return a figure of q-profile for stability .
+#' For a \code{Stab_Syn_Multiple} object, this function return a figure that contains q-profile for (Gamma, Alpha, Beta) stability and synchrony.
+#' For a \code{Stab_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hirarchical level, and also q-profile for normalized beta stability.
 #'
 #'
 #' @examples
@@ -485,20 +485,20 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #' ## Single assemblage
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single <- Stab_Single(data=single_data[1:4,], order.q=seq(0.1,2,0.05), Alltime=TRUE)
+#' output_single <- Stab_Single(data=single_data[c(12,38),],
+#'                              order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStab_Syn_qprofile(output=output_single)
 #'
 #'
 #' ## Multiple assemblages
-#' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[1:4],
-#'                                   order.q=seq(0.1,2,0.05), Alltime=TRUE)
+#' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[c(9,11)],
+#'                                   order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStab_Syn_qprofile(output=output_multi)
 #'
 #'
 #' ## Hierarchies
-#' Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
-#' output_hier <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-#'                          order.q = c(1,2), Alltime=TRUE)
+#' output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#'                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStab_Syn_qprofile(output=output_hier)
 #'
 #' @export
@@ -623,14 +623,14 @@ ggStab_Syn_qprofile <- function(output){
 
 
 
-#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an setting variable as x-axis.
+#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an diversity (or other) variable.
 #'
-#' \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
+#' \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
 #'
 #' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
-#' @param x_variable name of the column that uses as the x-axis in the plot.
+#' @param x_variable name of the column of diversity (or other) variable, that will use as the x-axis in the plot.
 #' @param by_group name of the column that is a categorical variable for plotting points with different color. And it is required if \code{model = "LMM"}, model uses it as random effect for intercept and slope. Default is \code{NULL}.
-#' @param model specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear model with random effects for intercept and slope. Default is \code{model = "lm"}.
+#' @param model specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear mixed model with random effects for intercept and slope. Default is \code{model = "LMM"}.
 #'
 #'
 #' @import ggplot2
@@ -640,8 +640,8 @@ ggStab_Syn_qprofile <- function(output){
 #' @import dplyr
 #'
 #'
-#' @return For an \code{Stab_Single} object, this function return a figure of additional setting x-variable vs. stability.
-#' For an \code{Stab_Syn_Multiple} object, this function return a figures that is additional setting x-variable vs. (Gamma, Alpha, Beta) stability and synchrony.
+#' @return For an \code{Stab_Single} object, this function return a figure of diversity (or other) variable vs. stability.
+#' For an \code{Stab_Syn_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
@@ -650,11 +650,13 @@ ggStab_Syn_qprofile <- function(output){
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
 #' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
 #' single_plotdata <- data.frame(output_single,
-#'                               sowndiv=as.numeric(do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,2]),
-#'                               block=do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,1])
+#'                               sowndiv=as.numeric(do.call(rbind,
+#'                                                  strsplit(output_single[,1],"[._]+"))[,2]),
+#'                               block=do.call(rbind, strsplit(output_single[,1],"[._]+"))[,1])
 #' colnames(single_plotdata)[1] <- c("Plot/Community")
 #'
 #' ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+#'
 #'
 #' ## Multiple assemblages
 #' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,

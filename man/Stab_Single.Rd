@@ -13,7 +13,7 @@ Stab_Single(
 )
 }
 \arguments{
-\item{data}{can be input as a \code{vector} of time series data, or \code{data.frame/matrix} (assemblages by times).}
+\item{data}{can be input as a \code{vector} of time series data, or \code{data.frame} (assemblages by times).}
 
 \item{order.q}{a numerical vector specifying the orders of stability. Default is c(1,2).}
 

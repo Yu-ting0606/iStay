@@ -2,19 +2,20 @@
 % Please edit documentation in R/Main_Function.R
 \name{ggStab_Syn_qprofile}
 \alias{ggStab_Syn_qprofile}
-\title{ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object with q-profile.}
+\title{ggplot2 extension for a Stab_Single, Stab_Syn_Multiple or Stab_Hier object with q-profile.}
 \usage{
 ggStab_Syn_qprofile(output)
 }
 \arguments{
-\item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple}.}
+\item{output}{the output obtained from \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}.}
 }
 \value{
-For an \code{Stab_Single} object, this function return a figure of q-profile for stability .
-For an \code{Stab_Syn_Multiple} object, this function return two figures which are q-profile for (Gamma, Alpha, Beta) stability and q-profile for synchrony.
+For a \code{Stab_Single} object, this function return a figure of q-profile for stability .
+For a \code{Stab_Syn_Multiple} object, this function return a figure that contains q-profile for (Gamma, Alpha, Beta) stability and synchrony.
+For a \code{Stab_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hirarchical level, and also q-profile for normalized beta stability.
 }
 \description{
-\code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
+\code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 }
 \examples{
 data("Jena_experiment_plant_data")
@@ -23,20 +24,20 @@ data("Jena_hierarchical_mat")
 
 ## Single assemblage
 single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single <- Stab_Single(data=single_data[1:4,], order.q=seq(0.1,2,0.05), Alltime=TRUE)
+output_single <- Stab_Single(data=single_data[c(12,38),],
+                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStab_Syn_qprofile(output=output_single)
 
 
 ## Multiple assemblages
-output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[1:4],
-                                  order.q=seq(0.1,2,0.05), Alltime=TRUE)
+output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[c(9,11)],
+                                  order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStab_Syn_qprofile(output=output_multi)
 
 
 ## Hierarchies
-Jena_hierarchical_data <- Jena_hierarchical_data[,-2]
-output_hier <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-                         order.q = c(1,2), Alltime=TRUE)
+output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+                         order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStab_Syn_qprofile(output=output_hier)
 
 }

@@ -2,25 +2,25 @@
 % Please edit documentation in R/Main_Function.R
 \name{ggStab_Syn_analysis}
 \alias{ggStab_Syn_analysis}
-\title{ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an setting variable as x-axis.}
+\title{ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an diversity (or other) variable.}
 \usage{
 ggStab_Syn_analysis(output, x_variable, by_group = NULL, model = "LMM")
 }
 \arguments{
 \item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.}
 
-\item{x_variable}{name of the column that uses as the x-axis in the plot.}
+\item{x_variable}{name of the column of diversity (or other) variable, that will use as the x-axis in the plot.}
 
 \item{by_group}{name of the column that is a categorical variable for plotting points with different color. And it is required if \code{model = "LMM"}, model uses it as random effect for intercept and slope. Default is \code{NULL}.}
 
-\item{model}{specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear model with random effects for intercept and slope. Default is \code{model = "lm"}.}
+\item{model}{specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear mixed model with random effects for intercept and slope. Default is \code{model = "LMM"}.}
 }
 \value{
-For an \code{Stab_Single} object, this function return a figure of additional setting x-variable vs. stability.
-For an \code{Stab_Syn_Multiple} object, this function return a figures that is additional setting x-variable vs. (Gamma, Alpha, Beta) stability and synchrony.
+For an \code{Stab_Single} object, this function return a figure of diversity (or other) variable vs. stability.
+For an \code{Stab_Syn_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 }
 \description{
-\code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional setting as x-axis variable .
+\code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
 }
 \examples{
 data("Jena_experiment_plant_data")
@@ -29,11 +29,13 @@ data("Jena_experiment_plant_data")
 single_data <- do.call(rbind, Jena_experiment_plant_data)
 output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
 single_plotdata <- data.frame(output_single,
-                              sowndiv=as.numeric(do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,2]),
-                              block=do.call(rbind, strsplit(output_single$`Plot/Community`, "[._]+"))[,1])
+                              sowndiv=as.numeric(do.call(rbind,
+                                                 strsplit(output_single[,1],"[._]+"))[,2]),
+                              block=do.call(rbind, strsplit(output_single[,1],"[._]+"))[,1])
 colnames(single_plotdata)[1] <- c("Plot/Community")
 
 ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+
 
 ## Multiple assemblages
 output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,

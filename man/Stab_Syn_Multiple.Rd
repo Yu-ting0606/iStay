@@ -13,7 +13,7 @@ Stab_Syn_Multiple(
 )
 }
 \arguments{
-\item{data}{can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames/matrices} with each dataframe representing a assemblages-by-times data.}
+\item{data}{can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames} with each dataframe representing a assemblages-by-times data.}
 
 \item{order.q}{a numerical vector specifying the orders of stability and synchrony. Default is c(1,2).}
 
@@ -24,7 +24,7 @@ Stab_Syn_Multiple(
 \item{end_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.}
 }
 \value{
-a dataframe with columns "Assemblage", "Order_q", "Gamma Stability", "Alpha Stability", "Beta Stability (use additive decomposition)" and "Synchrony".
+a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
 }
 \description{
 \code{Stab_Syn_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
