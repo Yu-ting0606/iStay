@@ -25,9 +25,6 @@ library(iStay)
 
 `iStay` (information-based measures of stability and related synchrony) is an R package for featuring a class of measures of community/ecosystem stability and related synchrony; the corresponding diversity-stability is also assessed if biodiversity data are available. The information-based measures of stability were developed based on the generalized entropy parametrized by an order q > 0; see Chao et al. (2024) for the relevant theory and methodological background. All measures are illustrated by using biomass temporal data from the Jena experiment (Wagg et al. 2022).
 
-Based on a framework of Hill-Chao numbers of orders q = 0, 1 and 2, `MF.beta4` features the following multifunctionality measures for a single and multiple ecosystems; see Chao et al. (2023) for
-pertinent methodology and decomposition theory.
- 
 Specifically, iStay features the following measures separately for three cases:
 
 (1)	For a <u>single community</u>, it computes stability measures of order q > 0 and provides the stability profile which depicts the stability with respect to order q. When biodiversity data are available, the diversity-stability relationship is also assessed.
