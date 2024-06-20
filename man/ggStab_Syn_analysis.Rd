@@ -4,7 +4,12 @@
 \alias{ggStab_Syn_analysis}
 \title{ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an diversity (or other) variable.}
 \usage{
-ggStab_Syn_analysis(output, x_variable, by_group = NULL, model = "LMM")
+ggStab_Syn_analysis(
+  output,
+  x_variable,
+  by_group = NULL,
+  model = "LMM"
+)
 }
 \arguments{
 \item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.}

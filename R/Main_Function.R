@@ -142,10 +142,11 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     z_iplus <- apply(ZZ,1,sum)
     if(length(which(z_iplus==0))!=0){
       ZZ <- ZZ[-which(z_iplus==0),]
-      z_iplus <- z_iplus[z_iplus!=0]
+      #z_iplus <- z_iplus[z_iplus!=0]
     }
     ZZ <- as.matrix(ZZ)
     ZZ[which(ZZ==0)] <- 10^(-15)
+    z_iplus <- apply(ZZ,1,sum)
 
     z_plusk <- apply(ZZ,2,sum)
     z_plusplus <- sum(ZZ)
@@ -177,10 +178,11 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     z_iplus <- apply(ZZ,1,sum)
     if(length(which(z_iplus==0))!=0){
       ZZ <- ZZ[-which(z_iplus==0),]
-      z_iplus <- z_iplus[z_iplus!=0]
+      #z_iplus <- z_iplus[z_iplus!=0]
     }
     ZZ <- as.matrix(ZZ)
     ZZ[which(ZZ==0)] <- 10^(-15)
+    z_iplus <- apply(ZZ,1,sum)
 
     if(length(z_iplus)<=1){
       value <- NA

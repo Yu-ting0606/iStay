@@ -14,7 +14,7 @@ Specifically, iStay features the following measures separately for three cases:
 
 (2) For multiple communities, it computes four measures (gamma, alpha and beta stability and synchrony) and provides the corresponding profiles. When biodiversity data are available, the diversity-stability and diversity-synchrony relationships are also assessed.
 
-(3) For hierarchies, it computes three measures (gamma, alpha, and normalized beta stability for data in each hierarchical level) of order q > 0 and provides the stability profile which depicts the stability with respect to order q.
+(3) For hierarchies, it computes three measures (gamma, alpha, and normalized beta stability for data in each hierarchical level) of order q > 0 and provides the stability profile which depicts the stability with respect to order q.\cr
 
 
 This package contains five main functions: \cr
