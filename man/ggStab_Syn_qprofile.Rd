@@ -24,20 +24,21 @@ data("Jena_hierarchical_mat")
 
 ## Single assemblage
 single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single <- Stab_Single(data=single_data[c(12,38),],
-                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
-ggStab_Syn_qprofile(output=output_single)
+output_single_q <- Stab_Single(data=single_data[c(12,38),],
+                               order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_single_q)
 
 
 ## Multiple assemblages
-output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[c(9,11)],
-                                  order.q=seq(0.1,2,0.1), Alltime=TRUE)
-ggStab_Syn_qprofile(output=output_multi)
+multiple_data <- Jena_experiment_plant_data
+output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
+                                    order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_multi_q)
 
 
 ## Hierarchies
-output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
-                         order.q=seq(0.1,2,0.1), Alltime=TRUE)
-ggStab_Syn_qprofile(output=output_hier)
+output_hier_q <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+                           order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_hier_q)
 
 }

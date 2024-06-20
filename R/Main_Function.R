@@ -15,9 +15,8 @@
 #' @examples
 #' data("Jena_experiment_plant_data")
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output <- Stab_Single(data=single_data,
-#'                       order.q=c(1,2), Alltime=TRUE)
-#' output
+#' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+#' output_single
 #'
 #' @export
 
@@ -92,9 +91,9 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #'
 #' @examples
 #' data("Jena_experiment_plant_data")
-#' output <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-#'                             order.q=c(1,2), Alltime=TRUE)
-#' output
+#' multiple_data <- Jena_experiment_plant_data
+#' output_multi <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+#' output_multi
 #'
 #'
 #' @export
@@ -283,9 +282,9 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' data("Jena_hierarchical_data")
 #' data("Jena_hierarchical_mat")
-#' output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-#'                     order.q = c(1,2), Alltime=TRUE)
-#' output
+#' output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#'                          order.q=c(1,2), Alltime=TRUE)
+#' output_hier
 #'
 #' @export
 
@@ -485,21 +484,22 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #' ## Single assemblage
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single <- Stab_Single(data=single_data[c(12,38),],
-#'                              order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_single)
+#' output_single_q <- Stab_Single(data=single_data[c(12,38),],
+#'                                order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_single_q)
 #'
 #'
 #' ## Multiple assemblages
-#' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data[c(9,11)],
-#'                                   order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_multi)
+#' multiple_data <- Jena_experiment_plant_data
+#' output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
+#'                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_multi_q)
 #'
 #'
 #' ## Hierarchies
-#' output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
-#'                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_hier)
+#' output_hier_q <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#'                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_hier_q)
 #'
 #' @export
 
@@ -648,23 +648,26 @@ ggStab_Syn_qprofile <- function(output){
 #'
 #' ## Single assemblage
 #' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-#' single_plotdata <- data.frame(output_single,
-#'                               sowndiv=as.numeric(do.call(rbind,
-#'                                                  strsplit(output_single[,1],"[._]+"))[,2]),
-#'                               block=do.call(rbind, strsplit(output_single[,1],"[._]+"))[,1])
-#' colnames(single_plotdata)[1] <- c("Plot/Community")
+#' output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+#' output_single_div <- data.frame(output_single_div,
+#'                                 sowndiv=as.numeric(do.call(rbind,
+#'                                         strsplit(output_single_div[,1],"[._]+"))[,2]),
+#'                                 block=do.call(rbind,
+#'                                       strsplit(output_single_div[,1],"[._]+"))[,1])
+#' colnames(output_single_div)[1] <- c("Plot/Community")
 #'
-#' ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+#' ggStab_Syn_analysis(output=output_single_div, x_variable="sowndiv",
+#'                     by_group="block", model="LMM")
 #'
 #'
 #' ## Multiple assemblages
-#' output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-#'                                   order.q=c(1,2), Alltime=TRUE)
-#' multi_plotdata <- data.frame(output_multi, sowndiv=rep(c(16,8,4,2,1),8),
-#'                              block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+#' multiple_data <- Jena_experiment_plant_data
+#' output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
+#'                                block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 #'
-#' ggStab_Syn_analysis(output=multi_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+#' ggStab_Syn_analysis(output=output_multi_div, x_variable="sowndiv",
+#'                     by_group="block", model="LMM")
 #'
 #' @export
 

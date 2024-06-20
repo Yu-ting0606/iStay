@@ -31,9 +31,9 @@ a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synch
 }
 \examples{
 data("Jena_experiment_plant_data")
-output <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-                            order.q=c(1,2), Alltime=TRUE)
-output
+multiple_data <- Jena_experiment_plant_data
+output_multi <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+output_multi
 
 
 }

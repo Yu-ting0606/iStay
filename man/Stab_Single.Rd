@@ -32,8 +32,7 @@ a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 \examples{
 data("Jena_experiment_plant_data")
 single_data <- do.call(rbind, Jena_experiment_plant_data)
-output <- Stab_Single(data=single_data,
-                      order.q=c(1,2), Alltime=TRUE)
-output
+output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+output_single
 
 }

@@ -27,22 +27,25 @@ data("Jena_experiment_plant_data")
 
 ## Single assemblage
 single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-single_plotdata <- data.frame(output_single,
-                              sowndiv=as.numeric(do.call(rbind,
-                                                 strsplit(output_single[,1],"[._]+"))[,2]),
-                              block=do.call(rbind, strsplit(output_single[,1],"[._]+"))[,1])
-colnames(single_plotdata)[1] <- c("Plot/Community")
+output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+output_single_div <- data.frame(output_single_div,
+                                sowndiv=as.numeric(do.call(rbind,
+                                        strsplit(output_single_div[,1],"[._]+"))[,2]),
+                                block=do.call(rbind,
+                                      strsplit(output_single_div[,1],"[._]+"))[,1])
+colnames(output_single_div)[1] <- c("Plot/Community")
 
-ggStab_Syn_analysis(output=single_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+ggStab_Syn_analysis(output=output_single_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
 
 
 ## Multiple assemblages
-output_multi <- Stab_Syn_Multiple(Jena_experiment_plant_data,
-                                  order.q=c(1,2), Alltime=TRUE)
-multi_plotdata <- data.frame(output_multi, sowndiv=rep(c(16,8,4,2,1),8),
-                             block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+multiple_data <- Jena_experiment_plant_data
+output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
+                               block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 
-ggStab_Syn_analysis(output=multi_plotdata, x_variable="sowndiv", by_group="block", model="LMM")
+ggStab_Syn_analysis(output=output_multi_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
 
 }

@@ -36,8 +36,8 @@ a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha" and "
 
 data("Jena_hierarchical_data")
 data("Jena_hierarchical_mat")
-output <- Stab_Hier(data = Jena_hierarchical_data, mat = Jena_hierarchical_mat,
-                    order.q = c(1,2), Alltime=TRUE)
-output
+output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+                         order.q=c(1,2), Alltime=TRUE)
+output_hier
 
 }
