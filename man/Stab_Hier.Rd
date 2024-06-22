@@ -40,4 +40,5 @@ output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
                          order.q=c(1,2), Alltime=TRUE)
 output_hier
 
+
 }

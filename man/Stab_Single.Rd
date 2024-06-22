@@ -30,9 +30,16 @@ a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 \code{Stab_Single} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for single assemblage.
 }
 \examples{
-data("Jena_experiment_plant_data")
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-output_single
+# Stability of each single plot
+data("Jena_plot_biomass")
+single_plot <- do.call(rbind, Jena_plot_biomass)
+output_single_plot <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+output_single_plot
+
+# Stability of each single species in each plot
+data("Jena_species_biomass")
+single_species <- do.call(rbind, Jena_species_biomass)
+output_single_species <- Stab_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
+output_single_species
 
 }

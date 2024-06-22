@@ -30,10 +30,17 @@ a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synch
 \code{Stab_Syn_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
 }
 \examples{
-data("Jena_experiment_plant_data")
-multiple_data <- Jena_experiment_plant_data
-output_multi <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
-output_multi
+# Stability of multiple plots
+data("Jena_plot_biomass")
+multiple_plot <- Jena_plot_biomass
+output_multi_plot <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+output_multi_plot
+
+# Stability of multiple species in each plot
+data("Jena_species_biomass")
+multiple_species <- Jena_species_biomass
+output_multi_species <- Stab_Syn_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
+output_multi_species
 
 
 }

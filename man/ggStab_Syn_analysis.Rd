@@ -4,12 +4,7 @@
 \alias{ggStab_Syn_analysis}
 \title{ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an diversity (or other) variable.}
 \usage{
-ggStab_Syn_analysis(
-  output,
-  x_variable,
-  by_group = NULL,
-  model = "LMM"
-)
+ggStab_Syn_analysis(output, x_variable, by_group = NULL, model = "LMM")
 }
 \arguments{
 \item{output}{the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.}
@@ -28,29 +23,59 @@ For an \code{Stab_Syn_Multiple} object, this function return a figure that is ab
 \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
 }
 \examples{
-data("Jena_experiment_plant_data")
+data("Jena_plot_biomass")
+data("Jena_species_biomass")
+data("Jena_hierarchical_data")
+data("Jena_hierarchical_mat")
 
 ## Single assemblage
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-output_single_div <- data.frame(output_single_div,
-                                sowndiv=as.numeric(do.call(rbind,
-                                        strsplit(output_single_div[,1],"[._]+"))[,2]),
-                                block=do.call(rbind,
-                                      strsplit(output_single_div[,1],"[._]+"))[,1])
-colnames(output_single_div)[1] <- c("Plot/Community")
+# Stability of each single plot
+single_plot <- do.call(rbind, Jena_plot_biomass)
+output_single_plot_div <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+output_single_plot_div <- data.frame(output_single_plot_div,
+                                     sowndiv=as.numeric(do.call(rbind,
+                                       strsplit(output_single_plot_div[,1],"[._]+"))[,2]),
+                                     block=do.call(rbind,
+                                       strsplit(output_single_plot_div[,1],"[._]+"))[,1])
 
-ggStab_Syn_analysis(output=output_single_div, x_variable="sowndiv",
+ggStab_Syn_analysis(output=output_single_plot_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
+
+# Stability of each single species
+single_species <- do.call(rbind, Jena_species_biomass)
+output_single_species_div <- Stab_Single(data=single_species,
+                                         order.q=c(1,2), Alltime=TRUE)
+output_single_species_div <- data.frame(output_single_species_div,
+                              sowndiv=as.numeric(do.call(rbind,
+                                      strsplit(output_single_species_div[,1],"[._]+"))[,3]),
+                              block=do.call(rbind,
+                                    strsplit(output_single_species_div[,1],"[._]+"))[,2])
+
+ggStab_Syn_analysis(output=output_single_species_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 
 
 ## Multiple assemblages
-multiple_data <- Jena_experiment_plant_data
-output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
-output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
-                               block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+# Stability of multiple plots
+multiple_plot <- Jena_plot_biomass
+output_multi_plot_div <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+output_multi_plot_div <- data.frame(output_multi_plot_div, sowndiv=rep(c(16,8,4,2,1),8),
+                                    block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 
-ggStab_Syn_analysis(output=output_multi_div, x_variable="sowndiv",
+ggStab_Syn_analysis(output=output_multi_plot_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
+
+# Stability of multiple species in plot
+multiple_species <- Jena_species_biomass
+output_multi_species_div <- Stab_Syn_Multiple(data=multiple_species,
+                                              order.q=c(1,2), Alltime=TRUE)
+output_multi_species_div <- data.frame(output_multi_species_div,
+                             sowndiv=as.numeric(do.call(rbind,
+                                     strsplit(output_multi_species_div[,1],"_"))[,3]),
+                             block=do.call(rbind,
+                                   strsplit(output_multi_species_div[,1],"_"))[,2])
+
+ggStab_Syn_analysis(output=output_multi_species_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 
 }

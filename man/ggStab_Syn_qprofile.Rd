@@ -18,22 +18,37 @@ For a \code{Stab_Hier} object, this function return a figure that contains q-pro
 \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 }
 \examples{
-data("Jena_experiment_plant_data")
+data("Jena_plot_biomass")
+data("Jena_species_biomass")
 data("Jena_hierarchical_data")
 data("Jena_hierarchical_mat")
 
 ## Single assemblage
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single_q <- Stab_Single(data=single_data[c(12,38),],
-                               order.q=seq(0.1,2,0.1), Alltime=TRUE)
-ggStab_Syn_qprofile(output=output_single_q)
+# Stability of each single plot
+single_plot <- do.call(rbind, Jena_plot_biomass)
+output_single_plot_q <- Stab_Single(data=single_plot[c(12,38),],
+                                    order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_single_plot_q)
+
+# Stability of each single species
+single_species <- do.call(rbind, Jena_species_biomass)
+output_single_species_q <- Stab_Single(data=single_species[c(40,49),],
+                                       order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_single_species_q)
 
 
 ## Multiple assemblages
-multiple_data <- Jena_experiment_plant_data
-output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
-                                    order.q=seq(0.1,2,0.1), Alltime=TRUE)
-ggStab_Syn_qprofile(output=output_multi_q)
+# Stability of multiple plots
+multiple_plot <- Jena_plot_biomass
+output_multi_plot_q <- Stab_Syn_Multiple(data=multiple_plot[c(9,11)],
+                                         order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_multi_plot_q)
+
+# Stability of multiple species in plot
+multiple_species <- Jena_species_biomass
+output_multi_species_q <- Stab_Syn_Multiple(data=multiple_species[c(62,70)],
+                                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
+ggStab_Syn_qprofile(output=output_multi_species_q)
 
 
 ## Hierarchies

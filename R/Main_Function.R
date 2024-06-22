@@ -13,10 +13,17 @@
 #' @return a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 #'
 #' @examples
-#' data("Jena_experiment_plant_data")
-#' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-#' output_single
+#' # Stability of each single plot
+#' data("Jena_plot_biomass")
+#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' output_single_plot <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_single_plot
+#'
+#' # Stability of each single species in each plot
+#' data("Jena_species_biomass")
+#' single_species <- do.call(rbind, Jena_species_biomass)
+#' output_single_species <- Stab_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
+#' output_single_species
 #'
 #' @export
 
@@ -33,9 +40,9 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
   if(sum(which(order.q<=0))){
     stop('Order q need larger than 0.')
   }
-  if(sum(which(apply(data,1,sum)==0))){
-    stop('There is at least one plot/community whose time series data are all zeros.')
-  }
+  # if(sum(apply(data,1,sum)==0)!=0){
+  #   stop('There is at least one plot/community whose time series data are all zeros.')
+  # }
 
   if(Alltime!=TRUE){
     if(is.null(start_T) | is.null(end_T)){
@@ -47,14 +54,18 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
   }
 
   stability <- function(vector,q){
-    K <- length(vector)
-    vector[which(vector==0)] <- 10^(-15)
-    if(q==1){
-      H <- sum((vector/sum(vector))*log(vector/sum(vector)))*(-1)
-      out <- H/log(K)
+    if(sum(vector!=0)==0){
+      out <- NA
     }else{
-      up <- 1-sum((vector/sum(vector))^q)
-      out <- up/(1-K^(1-q))
+      K <- length(vector)
+      vector[which(vector==0)] <- 10^(-15)
+      if(q==1){
+        H <- sum((vector/sum(vector))*log(vector/sum(vector)))*(-1)
+        out <- H/log(K)
+      }else{
+        up <- 1-sum((vector/sum(vector))^q)
+        out <- up/(1-K^(1-q))
+      }
     }
     return(out)
   }
@@ -90,10 +101,17 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #' @return a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
 #'
 #' @examples
-#' data("Jena_experiment_plant_data")
-#' multiple_data <- Jena_experiment_plant_data
-#' output_multi <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
-#' output_multi
+#' # Stability of multiple plots
+#' data("Jena_plot_biomass")
+#' multiple_plot <- Jena_plot_biomass
+#' output_multi_plot <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_plot
+#'
+#' # Stability of multiple species in each plot
+#' data("Jena_species_biomass")
+#' multiple_species <- Jena_species_biomass
+#' output_multi_species <- Stab_Syn_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_species
 #'
 #'
 #' @export
@@ -108,23 +126,23 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     stop('Order q need larger than 0.')
   }
 
-  if(is.data.frame(data) | is.matrix(data)){
-    if(nrow(data)<=1){
-      stop('There is at least one list that has only a single assemblage.')
-    }
-    if(sum(which(apply(data,1,sum)==0))!=0){
-      stop('There is at least one assemblage whose time series data are all zeros.')
-    }
-  }else{
-    num_row <- do.call(rbind, lapply(data, function(ZZ) nrow(ZZ)))
-    if(sum(which(as.vector(num_row)<=1))!=0){
-      stop('There is at least one list that has only a single assemblage.')
-    }
-    zero <- do.call(rbind, lapply(data, function(ZZ) sum(which(apply(ZZ,1,sum)==0))))
-    if(sum(which(as.vector(zero)!=0))!=0){
-      stop('There is at least one assemblage whose time series data are all zeros.')
-    }
-  }
+  # if(is.data.frame(data) | is.matrix(data)){
+  #   if(nrow(data)<=1){
+  #     stop('There is at least one list that has only a single assemblage.')
+  #   }
+  #   if(sum(which(apply(data,1,sum)==0))!=0){
+  #     stop('There is at least one assemblage whose time series data are all zeros.')
+  #   }
+  # }else{
+  #   num_row <- do.call(rbind, lapply(data, function(ZZ) nrow(ZZ)))
+  #   if(sum(which(as.vector(num_row)<=1))!=0){
+  #     stop('There is at least one list that has only a single assemblage.')
+  #   }
+  #   zero <- do.call(rbind, lapply(data, function(ZZ) sum(apply(ZZ,1,sum)==0)))
+  #   if(sum(which(as.vector(zero)!=0))!=0){
+  #     stop('There is at least one assemblage whose time series data are all zeros.')
+  #   }
+  # }
 
   if(Alltime!=TRUE){
     if(is.null(start_T) | is.null(end_T)){
@@ -150,7 +168,8 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 
     z_plusk <- apply(ZZ,2,sum)
     z_plusplus <- sum(ZZ)
-    p_i <- apply(ZZ,2,function(w)w/z_iplus)
+    # 0622_revise
+    p_i <- as.data.frame(apply(ZZ,2,function(w)w/z_iplus))
     p_pool <- z_plusk/z_plusplus
     ww <- z_iplus/z_plusplus
 
@@ -167,6 +186,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
       alpha <- (1-sum(apply(p_i,2,function(w)(w^q)*ww)))/(1-K^(1-q))
       gamma <- (1-sum(p_pool^q))/(1-K^(1-q))
     }
+
     return(c(gamma, alpha, (1-alpha)/(1-gamma), (1-alpha)-(1-gamma)))
   }
 
@@ -175,47 +195,52 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
     M <- nrow(ZZ)
     K <- ncol(ZZ)
     #ZZ[is.na(ZZ)] <- 0
-    z_iplus <- apply(ZZ,1,sum)
-    if(length(which(z_iplus==0))!=0){
-      ZZ <- ZZ[-which(z_iplus==0),]
-      #z_iplus <- z_iplus[z_iplus!=0]
-    }
-    ZZ <- as.matrix(ZZ)
-    ZZ[which(ZZ==0)] <- 10^(-15)
-    z_iplus <- apply(ZZ,1,sum)
 
-    if(length(z_iplus)<=1){
-      value <- NA
+    if(M==1){
+      value <- 0
     }else{
-      z_plusk <- apply(ZZ,2,sum)
-      z_plusplus <- sum(ZZ)
-      p_i <- apply(ZZ,2,function(w)w/z_iplus)
-      ww <- z_iplus/z_plusplus
+      z_iplus <- apply(ZZ,1,sum)
+      if(length(which(z_iplus==0))!=0){
+        ZZ <- ZZ[-which(z_iplus==0),]
+        #z_iplus <- z_iplus[z_iplus!=0]
+      }
+      ZZ <- as.matrix(ZZ)
+      ZZ[which(ZZ==0)] <- 10^(-15)
+      z_iplus <- apply(ZZ,1,sum)
 
-      if(q==1){
-        pool <- z_plusk/z_plusplus
-        pool[which(pool==0)] <- 10^(-15)
-
-        A <- sum(apply(p_i,2,function(w){
-          nonzero <- which(w!=0)
-          value <- sum(ww[nonzero]*w[nonzero]*log(w[nonzero]))
-          return(value)
-        })
-        )
-        G <- sum((z_plusk/z_plusplus)*log(z_plusk/z_plusplus))
-        DOWN <- sum(ww*log(ww))*(-1)
-        value <- (A-G)/DOWN
-
+      if(length(z_iplus)<=1){
+        value <- NA
       }else{
-        A <- sum(apply(p_i^q,2,function(w)w*ww))
-        G <- sum((z_plusk/z_plusplus)^q)
-        DOWN <- sum(apply(p_i^q,2,function(w)w*(ww-ww^q)))
-        SUB <- sum((ZZ/z_plusplus)^q)/sum((z_plusk/z_plusplus)^q)
+        z_plusk <- apply(ZZ,2,sum)
+        z_plusplus <- sum(ZZ)
+        p_i <- apply(ZZ,2,function(w)w/z_iplus)
+        ww <- z_iplus/z_plusplus
 
-        if(type=="C"){
+        if(q==1){
+          pool <- z_plusk/z_plusplus
+          pool[which(pool==0)] <- 10^(-15)
+
+          A <- sum(apply(p_i,2,function(w){
+            nonzero <- which(w!=0)
+            value <- sum(ww[nonzero]*w[nonzero]*log(w[nonzero]))
+            return(value)
+          })
+          )
+          G <- sum((z_plusk/z_plusplus)*log(z_plusk/z_plusplus))
+          DOWN <- sum(ww*log(ww))*(-1)
           value <- (A-G)/DOWN
+
         }else{
-          value <- ((A-G)/DOWN)*SUB
+          A <- sum(apply(p_i^q,2,function(w)w*ww))
+          G <- sum((z_plusk/z_plusplus)^q)
+          DOWN <- sum(apply(p_i^q,2,function(w)w*(ww-ww^q)))
+          SUB <- sum((ZZ/z_plusplus)^q)/sum((z_plusk/z_plusplus)^q)
+
+          if(type=="C"){
+            value <- (A-G)/DOWN
+          }else{
+            value <- ((A-G)/DOWN)*SUB
+          }
         }
       }
     }
@@ -287,6 +312,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #' output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
 #'                          order.q=c(1,2), Alltime=TRUE)
 #' output_hier
+#'
 #'
 #' @export
 
@@ -480,22 +506,37 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #'
 #' @examples
-#' data("Jena_experiment_plant_data")
+#' data("Jena_plot_biomass")
+#' data("Jena_species_biomass")
 #' data("Jena_hierarchical_data")
 #' data("Jena_hierarchical_mat")
 #'
 #' ## Single assemblage
-#' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single_q <- Stab_Single(data=single_data[c(12,38),],
-#'                                order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_single_q)
+#' # Stability of each single plot
+#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' output_single_plot_q <- Stab_Single(data=single_plot[c(12,38),],
+#'                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_single_plot_q)
+#'
+#' # Stability of each single species
+#' single_species <- do.call(rbind, Jena_species_biomass)
+#' output_single_species_q <- Stab_Single(data=single_species[c(40,49),],
+#'                                        order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_single_species_q)
 #'
 #'
 #' ## Multiple assemblages
-#' multiple_data <- Jena_experiment_plant_data
-#' output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
-#'                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_multi_q)
+#' # Stability of multiple plots
+#' multiple_plot <- Jena_plot_biomass
+#' output_multi_plot_q <- Stab_Syn_Multiple(data=multiple_plot[c(9,11)],
+#'                                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_multi_plot_q)
+#'
+#' # Stability of multiple species in plot
+#' multiple_species <- Jena_species_biomass
+#' output_multi_species_q <- Stab_Syn_Multiple(data=multiple_species[c(62,70)],
+#'                                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
+#' ggStab_Syn_qprofile(output=output_multi_species_q)
 #'
 #'
 #' ## Hierarchies
@@ -646,29 +687,59 @@ ggStab_Syn_qprofile <- function(output){
 #' For an \code{Stab_Syn_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 #'
 #' @examples
-#' data("Jena_experiment_plant_data")
+#' data("Jena_plot_biomass")
+#' data("Jena_species_biomass")
+#' data("Jena_hierarchical_data")
+#' data("Jena_hierarchical_mat")
 #'
 #' ## Single assemblage
-#' single_data <- do.call(rbind, Jena_experiment_plant_data)
-#' output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
-#' output_single_div <- data.frame(output_single_div,
-#'                                 sowndiv=as.numeric(do.call(rbind,
-#'                                         strsplit(output_single_div[,1],"[._]+"))[,2]),
-#'                                 block=do.call(rbind,
-#'                                       strsplit(output_single_div[,1],"[._]+"))[,1])
-#' colnames(output_single_div)[1] <- c("Plot/Community")
+#' # Stability of each single plot
+#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' output_single_plot_div <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_single_plot_div <- data.frame(output_single_plot_div,
+#'                                      sowndiv=as.numeric(do.call(rbind,
+#'                                        strsplit(output_single_plot_div[,1],"[._]+"))[,2]),
+#'                                      block=do.call(rbind,
+#'                                        strsplit(output_single_plot_div[,1],"[._]+"))[,1])
 #'
-#' ggStab_Syn_analysis(output=output_single_div, x_variable="sowndiv",
+#' ggStab_Syn_analysis(output=output_single_plot_div, x_variable="sowndiv",
+#'                     by_group="block", model="LMM")
+#'
+#' # Stability of each single species
+#' single_species <- do.call(rbind, Jena_species_biomass)
+#' output_single_species_div <- Stab_Single(data=single_species,
+#'                                          order.q=c(1,2), Alltime=TRUE)
+#' output_single_species_div <- data.frame(output_single_species_div,
+#'                               sowndiv=as.numeric(do.call(rbind,
+#'                                       strsplit(output_single_species_div[,1],"[._]+"))[,3]),
+#'                               block=do.call(rbind,
+#'                                     strsplit(output_single_species_div[,1],"[._]+"))[,2])
+#'
+#' ggStab_Syn_analysis(output=output_single_species_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #'
 #' ## Multiple assemblages
-#' multiple_data <- Jena_experiment_plant_data
-#' output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
-#' output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
-#'                                block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+#' # Stability of multiple plots
+#' multiple_plot <- Jena_plot_biomass
+#' output_multi_plot_div <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_plot_div <- data.frame(output_multi_plot_div, sowndiv=rep(c(16,8,4,2,1),8),
+#'                                     block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 #'
-#' ggStab_Syn_analysis(output=output_multi_div, x_variable="sowndiv",
+#' ggStab_Syn_analysis(output=output_multi_plot_div, x_variable="sowndiv",
+#'                     by_group="block", model="LMM")
+#'
+#' # Stability of multiple species in plot
+#' multiple_species <- Jena_species_biomass
+#' output_multi_species_div <- Stab_Syn_Multiple(data=multiple_species,
+#'                                               order.q=c(1,2), Alltime=TRUE)
+#' output_multi_species_div <- data.frame(output_multi_species_div,
+#'                              sowndiv=as.numeric(do.call(rbind,
+#'                                      strsplit(output_multi_species_div[,1],"_"))[,3]),
+#'                              block=do.call(rbind,
+#'                                    strsplit(output_multi_species_div[,1],"_"))[,2])
+#'
+#' ggStab_Syn_analysis(output=output_multi_species_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #' @export
@@ -679,7 +750,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
   # if(is.null(by_group)==FALSE){by_group_ori <- by_group}
 
   if(length(which(colnames(output)=="Stability"))!=0){
-    if(length(which(colnames(output)=="Plot/Community"))==0 | length(which(colnames(output)=="Order_q"))==0){
+    if((length(which(colnames(output)=="Plot/Community"))==0 & length(which(colnames(output)=="Plot.Community"))==0) | length(which(colnames(output)=="Order_q"))==0){
       stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
     }
   }else{
