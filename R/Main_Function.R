@@ -833,8 +833,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                     xlab(label=x_variable)+
                     ylab(label="Stability")+ theme_bw()+
                     geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata$Xvariable),
-                              y=min(plotdata$Stability), size=5, hjust=1, vjust=0.1)+
+                              x=max(plotdata$Xvariable, na.rm = TRUE),
+                              y=min(plotdata$Stability, na.rm = TRUE), size=4.5, hjust=1.1, vjust=0.1)+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                           axis.title = element_text(size=16))
@@ -849,8 +849,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                     xlab(label=x_variable)+
                     ylab(label="Stability")+ theme_bw()+
                     geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata$Xvariable),
-                              y=min(plotdata$Stability), size=5, hjust=1, vjust=0.1)+
+                              x=max(plotdata$Xvariable, na.rm = TRUE),
+                              y=min(plotdata$Stability, na.rm = TRUE), size=5, hjust=1, vjust=0.1)+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                           axis.title = element_text(size=16))
@@ -968,11 +968,11 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
     #                              Order_q = rownames(lm_slope))
     # slope_text_Syn$Order_q <- as.factor(slope_text_Syn$Order_q)
 
-    tyG <- min(filter(plotdata_Stab, type=="Gamma")$Stability)
-    tyA <- min(filter(plotdata_Stab, type=="Alpha")$Stability)
+    tyG <- min(filter(plotdata_Stab, type=="Gamma")$Stability, na.rm = TRUE)
+    tyA <- min(filter(plotdata_Stab, type=="Alpha")$Stability, na.rm = TRUE)
     # tyBM <- max(filter(plotdata_Stab, type=="Beta (multiplicative)")$Stability)
-    tyBA <- max(filter(plotdata_Stab, type=="Beta")$Stability)
-    tyS <- min(filter(plotdata_Stab, type=="Synchrony")$Stability)
+    tyBA <- max(filter(plotdata_Stab, type=="Beta")$Stability, na.rm = TRUE)
+    tyS <- min(filter(plotdata_Stab, type=="Synchrony")$Stability, na.rm = TRUE)
 
     if(is.null(by_group)==FALSE){
 
@@ -985,7 +985,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                     xlab(label=x_variable)+
                     ylab(label="Stability and Synchrony")+ theme_bw()+
                     geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata_Stab$Xvariable),
+                              x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
                               y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
                               hjust=1, vjust=rep(c(0.1,0.1,1.1,0.1),each=2))+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
@@ -1020,7 +1020,7 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                       xlab(label=x_variable)+
                       ylab(label="Stability and Synchrony")+ theme_bw()+
                       geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
-                                x=max(plotdata_Stab$Xvariable),
+                                x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
                                 y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
                                 hjust=1, vjust=rep(c(0.1,1.1),each=4))+
                       theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
