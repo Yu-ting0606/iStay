@@ -1,6 +1,6 @@
 #' Calculate stability of the time series data for single assemblage.
 #'
-#' \code{Stab_Single} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for single assemblage.
+#' \code{Stay_Single} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for single assemblage.
 #'
 #' @param data can be input as a \code{vector} of time series data, or \code{data.frame} (assemblages by times).
 #' @param order.q a numerical vector specifying the orders of stability. Default is c(1,2).
@@ -16,18 +16,18 @@
 #' # Stability of each single plot
 #' data("Jena_plot_biomass")
 #' single_plot <- do.call(rbind, Jena_plot_biomass)
-#' output_single_plot <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_single_plot <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_single_plot
 #'
 #' # Stability of each single species in each plot
 #' data("Jena_species_biomass")
 #' single_species <- do.call(rbind, Jena_species_biomass)
-#' output_single_species <- Stab_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
+#' output_single_species <- Stay_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
 #' output_single_species
 #'
 #' @export
 
-Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
+Stay_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
 
   if(is.vector(data)){
     data <- matrix(data, nrow=1)
@@ -89,7 +89,7 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 
 #' Calculate stability and synchrony of the time series data for multiple assemblages.
 #'
-#' \code{Stab_Syn_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
+#' \code{Stay_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
 #'
 #' @param data can be input as a \code{data.frame/matrix} (assemblages by times), or a \code{list} of \code{data.frames} with each dataframe representing a assemblages-by-times data.
 #' @param order.q a numerical vector specifying the orders of stability and synchrony. Default is c(1,2).
@@ -104,19 +104,19 @@ Stab_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #' # Stability of multiple plots
 #' data("Jena_plot_biomass")
 #' multiple_plot <- Jena_plot_biomass
-#' output_multi_plot <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_plot <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_plot
 #'
 #' # Stability of multiple species in each plot
 #' data("Jena_species_biomass")
 #' multiple_species <- Jena_species_biomass
-#' output_multi_species <- Stab_Syn_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_species <- Stay_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_species
 #'
 #'
 #' @export
 
-Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
+Stay_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
 
   NA_num <- sum(is.na(data))
   if(NA_num!=0){
@@ -292,7 +292,7 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 
 #' Calculate stability of the time series data for hierarchical structure.
 #'
-#' \code{Stab_Hier} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
+#' \code{Stay_Hier} is a function that calculate stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
 #'
 #' @param data can be input as \code{data.frame} (assemblages by times).
 #' @param mat hierarchical structure of data.
@@ -303,20 +303,20 @@ Stab_Syn_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, 
 #'
 #' @import dplyr
 #'
-#' @return a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha" and "Beta (normalized)".
+#' @return a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha", "Beta" and "Synchrony".
 #'
 #' @examples
 #'
 #' data("Jena_hierarchical_data")
 #' data("Jena_hierarchical_mat")
-#' output_hier <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#' output_hier <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
 #'                          order.q=c(1,2), Alltime=TRUE)
 #' output_hier
 #'
 #'
 #' @export
 
-Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
+Stay_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=NULL){
   if(Alltime==FALSE){
     data <- data[,start_T:end_T]
   }
@@ -483,26 +483,28 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
   beta_max <- c(rep(NA,length(order.q)), stab[,4])
   alldata <- cbind(gamma_value, alpha_value, beta_max)
 
-  alldata <- cbind(alldata[,1:4], beta_value=(alldata[,3]-alldata[,4])/alldata[,5])
+  alldata <- cbind(alldata[,1:4], beta=alldata[,3]-alldata[,4],
+                   synchrony=1-((alldata[,3]-alldata[,4])/alldata[,5]))
   alldata <- as.data.frame(alldata)
-  colnames(alldata) <- c("Hier","Order_q","Gamma","Alpha","Beta (normalized)")
+  colnames(alldata) <- c("Hier","Order_q","Gamma","Alpha","Beta","Synchrony")
 
   return(alldata)
 }
 
 
 
-#' ggplot2 extension for a Stab_Single, Stab_Syn_Multiple or Stab_Hier object with q-profile.
+#' ggplot2 extension for a Stay_Single, Stay_Multiple or Stay_Hier object with q-profile.
 #'
-#' \code{ggStab_Syn_qprofile} is a graphical function that based on the output from the function \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
+#' \code{ggStay_qprofile} is a graphical function that based on the output from the function \code{Stay_Single}, \code{Stay_Multiple} or \code{Stay_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 #'
-#' @param output the output obtained from \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}.
+#' @param output the output obtained from \code{Stay_Single}, \code{Stay_Multiple} or \code{Stay_Hier}.
 #'
 #' @import ggpubr
 #'
-#' @return For a \code{Stab_Single} object, this function return a figure of q-profile for stability .
-#' For a \code{Stab_Syn_Multiple} object, this function return a figure that contains q-profile for (Gamma, Alpha, Beta) stability and synchrony.
-#' For a \code{Stab_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hirarchical level, and also q-profile for normalized beta stability.
+#'
+#' @return For a \code{Stay_Single} object, this function return a figure of q-profile for stability .
+#' For a \code{Stay_Multiple} object, this function return a figure that contains q-profile for (Gamma, Alpha, Beta) stability and synchrony.
+#' For a \code{Stay_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hirarchical level, and also q-profile for normalized beta stability.
 #'
 #'
 #' @examples
@@ -514,50 +516,50 @@ Stab_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #' ## Single assemblage
 #' # Stability of each single plot
 #' single_plot <- do.call(rbind, Jena_plot_biomass)
-#' output_single_plot_q <- Stab_Single(data=single_plot[c(12,38),],
+#' output_single_plot_q <- Stay_Single(data=single_plot[c(12,38),],
 #'                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_single_plot_q)
+#' ggStay_qprofile(output=output_single_plot_q)
 #'
 #' # Stability of each single species
 #' single_species <- do.call(rbind, Jena_species_biomass)
-#' output_single_species_q <- Stab_Single(data=single_species[c(40,49),],
+#' output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
 #'                                        order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_single_species_q)
+#' ggStay_qprofile(output=output_single_species_q)
 #'
 #'
 #' ## Multiple assemblages
 #' # Stability of multiple plots
 #' multiple_plot <- Jena_plot_biomass
-#' output_multi_plot_q <- Stab_Syn_Multiple(data=multiple_plot[c(9,11)],
+#' output_multi_plot_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
 #'                                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_multi_plot_q)
+#' ggStay_qprofile(output=output_multi_plot_q)
 #'
 #' # Stability of multiple species in plot
 #' multiple_species <- Jena_species_biomass
-#' output_multi_species_q <- Stab_Syn_Multiple(data=multiple_species[c(62,70)],
+#' output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
 #'                                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_multi_species_q)
+#' ggStay_qprofile(output=output_multi_species_q)
 #'
 #'
 #' ## Hierarchies
-#' output_hier_q <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#' output_hier_q <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
 #'                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
-#' ggStab_Syn_qprofile(output=output_hier_q)
+#' ggStay_qprofile(output=output_hier_q)
 #'
 #' @export
 
-ggStab_Syn_qprofile <- function(output){
+ggStay_qprofile <- function(output){
 
   if(length(which(colnames(output)=="Stability"))!=0){
     if(length(which(colnames(output)=="Plot/Community"))==0 | length(which(colnames(output)=="Order_q"))==0){
-      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
+      stop('Please put the complete output of "Stay_Single", "Stay_Multiple" or "Stay_Hier" function.')
     }else{
       outtype <- "single"
     }
   }else if(length(which(colnames(output)=="Hier"))!=0){
     if(length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0 | length(which(colnames(output)=="Alpha"))==0
-       | length(which(colnames(output)=="Beta (normalized)"))==0){
-      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
+       | length(which(colnames(output)=="Beta"))==0 | length(which(colnames(output)=="Synchrony"))==0){
+      stop('Please put the complete output of "Stay_Single", "Stay_Multiple" or "Stay_Hier" function.')
     }else{
       outtype <- "hier"
     }
@@ -565,7 +567,7 @@ ggStab_Syn_qprofile <- function(output){
     if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
        | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
-      stop('Please put the complete output of "Stab_Single", "Stab_Syn_Multiple" or "Stab_Hier" function.')
+      stop('Please put the complete output of "Stay_Single", "Stay_Multiple" or "Stay_Hier" function.')
     }else{
       outtype <- "multiple"
     }
@@ -575,12 +577,12 @@ ggStab_Syn_qprofile <- function(output){
     output$`Plot/Community` <- factor(output$`Plot/Community`, levels=unique(output$`Plot/Community`))
 
     plotout <- ggplot(data=output, aes(x=Order_q, y=Stability, color=`Plot/Community`))+
-                  geom_line(linewidth=1.2)+
-                  ylab(label="Stability")+
-                  xlab(label="Order of q")+
-                  labs(color="Plot/Community")+ theme_bw()+
-                  theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
-                        legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
+      geom_line(linewidth=1.2)+
+      ylab(label="Stability")+
+      xlab(label="Order of q")+
+      labs(color="Plot/Community")+ theme_bw()+
+      theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
+            legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
 
 
   }else if(outtype=="hier"){
@@ -595,10 +597,10 @@ ggStab_Syn_qprofile <- function(output){
                            type = rep(c("S_gamma",type_name), each=length(qq)))
     plotdat1$type <- factor(plotdat1$type, levels=c("S_gamma",type_name))
 
-    plotdat2 <- data.frame(Order_q = rep(qq, (length(hier_num)-1)),
-                           Diff = filter(output, Hier!=maxhier)$`Beta (normalized)`,
-                           type = rep(type_diff, each=length(qq)))
-    plotdat2$type <- factor(plotdat2$type, levels=type_diff)
+    # plotdat2 <- data.frame(Order_q = rep(qq, (length(hier_num)-1)),
+    #                        Diff = filter(output, Hier!=maxhier)$`Beta (normalized)`,
+    #                        type = rep(type_diff, each=length(qq)))
+    # plotdat2$type <- factor(plotdat2$type, levels=type_diff)
 
     plotout1 <- ggplot(data=plotdat1, aes(x=Order_q, y=Stability, color=type))+
                   geom_line(linewidth=1.2)+
@@ -614,23 +616,96 @@ ggStab_Syn_qprofile <- function(output){
       plotout1 <- plotout1 + guides(color=guide_legend(nrow=2,byrow=TRUE))
     }
 
-    plotout2 <- ggplot(data=plotdat2, aes(x=Order_q, y=Diff, color=type))+
-                  geom_line(linewidth=1.2)+
-                  ylab(label=expression(paste("Difference of Stability\n  (Normalized Beta)")))+
-                  labs(color="")+
-                  theme_bw()+
-                  theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
-                        plot.margin = unit(c(1,1,1,1), "cm"),
-                        legend.key.size = unit(0.8, 'cm'),
-                        legend.text = element_text(size=12),legend.position="bottom")
+    # plotdat2$Synchrony <- 1-plotdat2$Diff
+    # plotout2 <- ggplot(data=plotdat2, aes(x=Order_q, y=Synchrony, color=type))+
+    #   geom_line(linewidth=1.2)+
+    #   ylab(label=expression(paste("Synchrony")))+
+    #   labs(color="")+
+    #   theme_bw()+
+    #   theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
+    #         plot.margin = unit(c(1,1,1,1), "cm"),
+    #         legend.key.size = unit(0.8, 'cm'),
+    #         legend.text = element_text(size=12),legend.position="bottom")
+    #
+    # if(length(type_diff)>=4){
+    #   plotout2 <- plotout2 + guides(color=guide_legend(nrow=2,byrow=TRUE))
+    # }
 
-    if(length(type_diff)>=4){
-      plotout2 <- plotout2 + guides(color=guide_legend(nrow=2,byrow=TRUE))
+    if(sum(output$Order_q==1)!=0 | sum(output$Order_q==2)!=0){
+      output_q1 <- filter(output, Order_q==1)
+      output_q1 <- output_q1[order(output_q1$Hier,decreasing=TRUE),]
+      output_q2 <- filter(output, Order_q==2)
+      output_q2 <- output_q2[order(output_q2$Hier,decreasing=TRUE),]
+
+      label_names <- c(paste("Beta(",(output_q1$Hier-1)[-length(output_q1$Hier)],")", sep=""), "Alpha(1)")
+      if(nrow(output_q1)==0){
+        q_stab_q1 <- c()
+      }else{
+        q_stab_q1 <- data.frame(Hier=label_names,
+                                Order_q=rep(1,length(output_q1$Hier)),
+                                beta_alpha=c((output_q1$Gamma-output_q1$Alpha)[2:length(output_q1$Hier)], output_q1$Alpha[length(output_q1$Hier)]))
+      }
+
+      if(nrow(output_q2)==0){
+        q_stab_q2 <- c()
+      }else{
+        q_stab_q2 <- data.frame(Hier=label_names,
+                                Order_q=rep(2,length(output_q2$Hier)),
+                                beta_alpha=c((output_q2$Gamma-output_q2$Alpha)[2:length(output_q2$Hier)], output_q2$Alpha[length(output_q2$Hier)]))
+      }
+
+      q_stab_q1$percent <- ((q_stab_q1$beta_alpha)/sum(q_stab_q1$beta_alpha))*100
+      q_stab_q2$percent <- ((q_stab_q2$beta_alpha)/sum(q_stab_q2$beta_alpha))*100
+
+      plotdat_q12 <- rbind(q_stab_q1, q_stab_q2)
+      plotdat_q12$Hier <- factor(plotdat_q12$Hier, levels=label_names)
+      plotdat_q12$Order_q <- as.factor(plotdat_q12$Order_q)
+
+      plotout3 <- ggplot(data=plotdat_q12, aes(x=Order_q, y=percent, fill=Hier))+
+        geom_bar(stat="identity", width = 0.5)+
+        ylab(label="Stability (% of total)")+
+        labs(fill = "Hierarchical level")+theme_bw()+
+        theme(axis.text=element_text(size=10), axis.title=element_text(size=13))
+
+
+      label_names2 <- paste("Hier_",(output_q1$Hier-1)[-length(output_q1$Hier)], sep="")
+      if(nrow(output_q1)==0){
+        q_stab_q1_2 <- c()
+      }else{
+        q_stab_q1_2 <- data.frame(Hier=label_names2, Order_q=rep(1,length(output_q1$Hier)-1),
+                                  beta_alpha=c(output_q1$Synchrony[2:length(output_q1$Hier)]))
+      }
+
+      if(nrow(output_q2)==0){
+        q_stab_q2_2 <- c()
+      }else{
+        q_stab_q2_2 <- data.frame(Hier=label_names2, Order_q=rep(2,length(output_q2$Hier)-1),
+                                  beta_alpha=c(output_q2$Synchrony[2:length(output_q2$Hier)]))
+      }
+      q_stab_q1_2[,4] <- q_stab_q1_2[,3]/sum(q_stab_q1_2[,3])
+      q_stab_q2_2[,4] <- q_stab_q2_2[,3]/sum(q_stab_q2_2[,3])
+
+      plotdat_q12_2 <- rbind(q_stab_q1_2, q_stab_q2_2)
+      colnames(plotdat_q12_2)[c(3,4)] <- c("Synchrony","percent")
+      plotdat_q12_2$Hier <- factor(plotdat_q12_2$Hier, levels=label_names2)
+      plotdat_q12_2$Order_q <- as.factor(plotdat_q12_2$Order_q)
+
+      plotout4 <- ggplot(data=plotdat_q12_2, aes(x=Order_q, y=percent, fill=Hier))+
+        geom_bar(stat="identity", width = 0.5)+
+        ylab(label="Synchrony (% of total)")+
+        labs(fill = "Hierarchical level")+theme_bw()+
+        theme(axis.text=element_text(size=10), axis.title=element_text(size=13))
     }
 
-
-    plotout <- ggarrange(plotout1, plotout2, ncol = 2)
-
+    if(sum(output$Order_q==1)!=0 | sum(output$Order_q==2)!=0){
+      plotout <- list()
+      # plotout[[1]] <- ggarrange(plotout1, plotout2, ncol = 2)
+      plotout[[1]] <- plotout1
+      plotout[[2]] <- ggarrange(plotout3, plotout4, ncol = 2)
+    }else{
+      # plotout <- ggarrange(plotout1, plotout2, ncol = 2)
+      plotout <- plotout1
+    }
 
   }else{
     output$Place <- factor(output$Place, levels=unique(output$Place))
@@ -643,34 +718,34 @@ ggStab_Syn_qprofile <- function(output){
     stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta","Synchrony"))
 
     plotout <- ggplot(data=stab_plotdat, aes(x=Order_q, y=value, color=Place))+
-                    geom_line(linewidth=1.2)+
-                    facet_wrap(.~type, nrow=2, scales = "free")+
-                    ylab(label="Stability and Synchrony")+
-                    xlab(label="Order of q")+
-                    labs(color="Place")+ theme_bw()+
-                    theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                          legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))
-#
-#     plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
-#                       geom_line(linewidth=1.2)+
-#                       ylab(label="Synchrony")+
-#                       xlab(label="Order of q")+
-#                       labs(color="Place")+ theme_bw()+
-#                       theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
-#                             legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
-
+      geom_line(linewidth=1.2)+
+      facet_wrap(.~type, nrow=2, scales = "free")+
+      ylab(label="Stability and Synchrony")+
+      xlab(label="Order of q")+
+      labs(color="Place")+ theme_bw()+
+      theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+            legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+            axis.title = element_text(size=16))
+    #
+    #     plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
+    #                       geom_line(linewidth=1.2)+
+    #                       ylab(label="Synchrony")+
+    #                       xlab(label="Order of q")+
+    #                       labs(color="Place")+ theme_bw()+
+    #                       theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
+    #                             legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
   }
+
   return(plotout)
 }
 
 
 
-#' ggplot2 extension for a Stab_Single or Stab_Syn_Multiple object to analysis with an diversity (or other) variable.
+#' ggplot2 extension for a Stay_Single or Stay_Multiple object to analysis with an diversity (or other) variable.
 #'
-#' \code{ggStab_Syn_analysis} is a graphical function that based on the output from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
+#' \code{ggStay_analysis} is a graphical function that based on the output from the function \code{Stay_Single} or \code{Stay_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
 #'
-#' @param output the output obtained from \code{Stab_Single} or \code{Stab_Syn_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
+#' @param output the output obtained from \code{Stay_Single} or \code{Stay_Multiple} and needs to combine with a column that sets as \code{x_variable}. Also, if \code{by_group} is not \code{NULL}, the output also need to combine with the column that sets as \code{by_group}.
 #' @param x_variable name of the column of diversity (or other) variable, that will use as the x-axis in the plot.
 #' @param by_group name of the column that is a categorical variable for plotting points with different color. And it is required if \code{model = "LMM"}, model uses it as random effect for intercept and slope. Default is \code{NULL}.
 #' @param model specifying the fitting model, \code{model = "lm"} for linear model; \code{model = "LMM"} for linear mixed model with random effects for intercept and slope. Default is \code{model = "LMM"}.
@@ -683,8 +758,8 @@ ggStab_Syn_qprofile <- function(output){
 #' @import dplyr
 #'
 #'
-#' @return For an \code{Stab_Single} object, this function return a figure of diversity (or other) variable vs. stability.
-#' For an \code{Stab_Syn_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
+#' @return For an \code{Stay_Single} object, this function return a figure of diversity (or other) variable vs. stability.
+#' For an \code{Stay_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 #'
 #' @examples
 #' data("Jena_plot_biomass")
@@ -695,19 +770,19 @@ ggStab_Syn_qprofile <- function(output){
 #' ## Single assemblage
 #' # Stability of each single plot
 #' single_plot <- do.call(rbind, Jena_plot_biomass)
-#' output_single_plot_div <- Stab_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_single_plot_div <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_single_plot_div <- data.frame(output_single_plot_div,
 #'                                      sowndiv=as.numeric(do.call(rbind,
 #'                                        strsplit(output_single_plot_div[,1],"[._]+"))[,2]),
 #'                                      block=do.call(rbind,
 #'                                        strsplit(output_single_plot_div[,1],"[._]+"))[,1])
 #'
-#' ggStab_Syn_analysis(output=output_single_plot_div, x_variable="sowndiv",
+#' ggStay_analysis(output=output_single_plot_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #' # Stability of each single species
 #' single_species <- do.call(rbind, Jena_species_biomass)
-#' output_single_species_div <- Stab_Single(data=single_species,
+#' output_single_species_div <- Stay_Single(data=single_species,
 #'                                          order.q=c(1,2), Alltime=TRUE)
 #' output_single_species_div <- data.frame(output_single_species_div,
 #'                               sowndiv=as.numeric(do.call(rbind,
@@ -715,23 +790,23 @@ ggStab_Syn_qprofile <- function(output){
 #'                               block=do.call(rbind,
 #'                                     strsplit(output_single_species_div[,1],"[._]+"))[,2])
 #'
-#' ggStab_Syn_analysis(output=output_single_species_div, x_variable="sowndiv",
+#' ggStay_analysis(output=output_single_species_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #'
 #' ## Multiple assemblages
 #' # Stability of multiple plots
 #' multiple_plot <- Jena_plot_biomass
-#' output_multi_plot_div <- Stab_Syn_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
+#' output_multi_plot_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_plot_div <- data.frame(output_multi_plot_div, sowndiv=rep(c(16,8,4,2,1),8),
 #'                                     block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 #'
-#' ggStab_Syn_analysis(output=output_multi_plot_div, x_variable="sowndiv",
+#' ggStay_analysis(output=output_multi_plot_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #' # Stability of multiple species in plot
 #' multiple_species <- Jena_species_biomass
-#' output_multi_species_div <- Stab_Syn_Multiple(data=multiple_species,
+#' output_multi_species_div <- Stay_Multiple(data=multiple_species,
 #'                                               order.q=c(1,2), Alltime=TRUE)
 #' output_multi_species_div <- data.frame(output_multi_species_div,
 #'                              sowndiv=as.numeric(do.call(rbind,
@@ -739,25 +814,25 @@ ggStab_Syn_qprofile <- function(output){
 #'                              block=do.call(rbind,
 #'                                    strsplit(output_multi_species_div[,1],"_"))[,2])
 #'
-#' ggStab_Syn_analysis(output=output_multi_species_div, x_variable="sowndiv",
+#' ggStay_analysis(output=output_multi_species_div, x_variable="sowndiv",
 #'                     by_group="block", model="LMM")
 #'
 #' @export
 
-ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
+ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
   # x_variable_ori <- x_variable
   # if(is.null(by_group)==FALSE){by_group_ori <- by_group}
 
   if(length(which(colnames(output)=="Stability"))!=0){
     if((length(which(colnames(output)=="Plot/Community"))==0 & length(which(colnames(output)=="Plot.Community"))==0) | length(which(colnames(output)=="Order_q"))==0){
-      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+      stop('Please put the complete output of "Stay_Single" or "Stay_Multiple" function.')
     }
   }else{
     if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
        | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
-      stop('Please put the complete output of "Stab_Single" or "Stab_Syn_Multiple" function.')
+      stop('Please put the complete output of "Stay_Single" or "Stay_Multiple" function.')
     }
   }
   if(length(which(colnames(output)==x_variable))==0){
@@ -837,7 +912,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                               y=min(plotdata$Stability, na.rm = TRUE), size=4.5, hjust=1.1, vjust=0.1)+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))
+                          axis.title = element_text(size=16))+
+                    guides(linetype = guide_legend(keywidth = 2.5))
 
     }else{
       plotout <- ggplot(plotdata, aes(x=Xvariable, y=Stability))+
@@ -853,7 +929,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                               y=min(plotdata$Stability, na.rm = TRUE), size=5, hjust=1, vjust=0.1)+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))
+                          axis.title = element_text(size=16))+
+                    guides(linetype = guide_legend(keywidth = 2.5))
     }
 
   }else{
@@ -990,7 +1067,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                               hjust=1, vjust=rep(c(0.1,0.1,1.1,0.1),each=2))+
                     theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                           legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))
+                          axis.title = element_text(size=16))+
+                    guides(linetype = guide_legend(keywidth = 2.5))
 
       # plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
       #               geom_point(aes(color=Gvariable), size=2.7)+
@@ -1025,7 +1103,8 @@ ggStab_Syn_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                                 hjust=1, vjust=rep(c(0.1,1.1),each=4))+
                       theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                             legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                            axis.title = element_text(size=16))
+                            axis.title = element_text(size=16))+
+                      guides(linetype = guide_legend(keywidth = 2.5))
 
       # plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
       #                 geom_point(size=2.7)+
