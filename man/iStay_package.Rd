@@ -19,15 +19,15 @@ Specifically, iStay features the following measures separately for three cases:
 
 This package contains five main functions: \cr
 
-  1. \code{Stab_Single} calculates stability of the time series data (like biomass, productivity, etc.) for single assemblage. \cr
+  1. \code{Stay_Single} calculates stability of the time series data (like biomass, productivity, etc.) for single assemblage. \cr
 
-  2. \code{Stab_Syn_Multiple} calculates Gamma, Alpha and Beta stability, and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages. \cr
+  2. \code{Stay_Multiple} calculates Gamma, Alpha and Beta stability, and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages. \cr
 
-  3. \code{Stab_Hier} calculates stability of the time series data (like biomass, productivity, etc.) for hierarchical structure. \cr
+  3. \code{Stay_Hier} calculates stability of the time series data (like biomass, productivity, etc.) for hierarchical structure. \cr
 
-  4. \code{ggStab_Syn_qprofile} provides to graph the q-profile of stability (and synchrony if is multiple assemblages) based on the output obtained from the function \code{Stab_Single}, \code{Stab_Syn_Multiple} or \code{Stab_Hier}. \cr
+  4. \code{ggStay_qprofile} provides to graph the q-profile of stability (and synchrony if is multiple assemblages) based on the output obtained from the function \code{Stay_Single}, \code{Stay_Multiple} or \code{Stay_Hier}. \cr
 
-  5. \code{ggStab_Syn_analysis} provides to graph the relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable based on the output obtained from the function \code{Stab_Single} or \code{Stab_Syn_Multiple}. \cr
+  5. \code{ggStay_analysis} provides to graph the relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable based on the output obtained from the function \code{Stay_Single} or \code{Stay_Multiple}. \cr
 
 }
 
