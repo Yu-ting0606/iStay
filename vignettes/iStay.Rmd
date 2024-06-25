@@ -68,31 +68,31 @@ This package includes five functions, as listed below with default arguments. Se
 - **Stab_Single**: calculates stability of the time series data (like biomass, productivity, etc.) for single assemblage.
 
 ```{r, eval=FALSE}
-Stab_Single(data, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
+Stay_Single(data, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
 ```
 
 - **Stab_Syn_Multiple**: calculates Gamma, Alpha and Beta stability, and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
 
 ```{r, eval=FALSE}
-Stab_Syn_Multiple(data, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
+Stay_Multiple(data, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
 ```
 
 - **Stab_Hier**: calculates stability of the time series data (like biomass, productivity, etc.) for hierarchical structure.
 
 ```{r, eval=FALSE}
-Stab_Hier(data, mat, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
+Stay_Hier(data, mat, order.q = c(1, 2), Alltime = TRUE, start_T = NULL, end_T = NULL)
 ```
 
 - **ggStab_Syn_qprofile**: provides to graph the q-profile of stability (and synchrony if is multiple assemblages) based on the output obtained from the function `Stab_Single`, `Stab_Syn_Multiple` or `Stab_Hier`.
 
 ```{r, eval=FALSE}
-ggStab_Syn_qprofile(output)
+ggStay_qprofile(output)
 ```
 
 - **ggStab_Syn_analysis**: provides to graph the relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable based on the output obtained from the function `Stab_Single` or `Stab_Syn_Multiple`.
 
 ```{r, eval=FALSE}
-ggStab_Syn_analysis(output, x_variable, by_group = NULL, model = "LMM")
+ggStay_analysis(output, x_variable, by_group = NULL, model = "LMM")
 ```
 
 
@@ -106,56 +106,85 @@ For <u>Hierarchies</u> analysis: input data comprises multiple time series data 
 
 #### Time series of Biomass data
 
-The biomass data in German Jena experiment are used here to demonstrate the use of the five functions; see Wagg (2022) for the original datasets. We use the biomass time series collected from 76 plots in four blocks (B1, B2, B3, and B4) for illustrating all measures and depicting the corresponding diversity-stability relationships. In each block, plots were sown in a diversity gradient of 1, 2, 4, 8, or 16 plant species. Each diversity of plant species corresponds to three or four plots in the block. In each plot, plant biomass is recorded each year from 2013 to 2019. 
+The biomass data in German Jena experiment are used here to demonstrate the use of the five functions; see Wagg (2022) for the original datasets. We use the biomass time series collected from 76 plots in four blocks (B1, B2, B3, and B4) for illustrating all measures and depicting the corresponding diversity-stability relationships. In each block, plots were sown in a diversity gradient of 1, 2, 4, 8, or 16 plant species. Each diversity of plant species corresponds to three or four plots in the block. In each plot, the total biomass of all species is recorded each year from 2003 to 2019. And also recorded the biomass of each species each year from 2003 to 2019 except 2004. 
 
-There are three datasets provided with the package: 17-year biomass data of plots dataset (`Jena_experiment_plant_data`), hierarchical biomass dataset (`Jena_hierarchical_data`), and hierarchical structure matrix dataset (`Jena_hierarchical_mat`). 
+There are four data provided with the package: 17-years biomass of plots data (`Jena_plot_biomass_data`), 16-years biomass of species in each plot data (`Jena_species_biomass_data`), hierarchical biomass data (`Jena_hierarchical_biomass_data`), and hierarchical structure matrix data (`Jena_hierarchical_mat`). 
 
 
-The first dataset (`Jena_experiment_plant_data`) is a list including 20 time series biomass dataframes by considering all possible block-sowndiv combinations (4 blocks and 5 levels of sown diversity). Each dataframe includes the plots (as rows) corresponding to same block and number of sown plants, and 17-years biomass of total species (as columns) of each plot. 
+The first data (`Jena_plot_biomass_data`) is a list including 20 time series biomass dataframes by considering all possible block-sowndiv combinations (4 blocks and 5 levels of sown diversity). Each dataframe includes the plots (as rows) corresponding to same block and number of sown plants, and 17-years biomass of total species (as columns) in each plot. 
 
-For this dataset, it mainly use for multiple communities analysis. And for single community analysis, we can just combines 20 time series biomass dataframes. Run the following code for the data `Jena_experiment_plant_data` to view the first ten rows and five columns (columns 1 to 5) of data using for single community analysis. And view the first five columns  (columns 1 to 5) in the first dataframe (B1_16) of data using for multiple communities analysis.
+For this dataset, it mainly use for multiple communities analysis. And for single community analysis, we can just combines 20 time series biomass dataframes. Run the following code for the data `Jena_plot_biomass_data` to view the first ten rows and five columns (columns 1 to 5) of data using for single community analysis. And view the first five columns (columns 1 to 5) in the first dataframe (B1_16) of data using for multiple communities analysis.
 
 ```{r, eval=F}
-data("Jena_experiment_plant_data")
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-head(round(single_data[,1:5],2), 10)
+data("Jena_plot_biomass_data")
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
+head(round(single_plot[,1:5],2), 10)
 ```
 
 ```{r, echo=F}
-data("Jena_experiment_plant_data")
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-head(round(single_data[,1:5],2), 10)
+data("Jena_plot_biomass_data")
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
+head(round(single_plot[,1:5],2), 10)
 ```
 
 ```{r, eval=F}
-data("Jena_experiment_plant_data")
-multiple_data <- Jena_experiment_plant_data
-head(round(multiple_data[[1]][,1:5],2), 10)
+data("Jena_plot_biomass_data")
+multiple_plot <- Jena_plot_biomass_data
+head(round(multiple_plot[[1]][,1:5],2), 10)
 ```
 
 ```{r, echo=F}
-data("Jena_experiment_plant_data")
-multiple_data <- Jena_experiment_plant_data
-head(round(multiple_data[[1]][,1:5],2), 10)
+data("Jena_plot_biomass_data")
+multiple_plot <- Jena_plot_biomass_data
+head(round(multiple_plot[[1]][,1:5],2), 10)
 ```
 
 
-For the data using in single and multiple communities analysis, we use the biomass of total species in every plot. For hierarchical analysis, we use the biomass of each species in every plot to construct hierarchical structure with four levels (Overall area, Block, Plot and Species). The second dataset (`Jena_hierarchical_data`) is the biomass data for hierarchical analysis, including all species in each plot (as columns) and 16-years biomass (as rows) of each species (year 2004 is deducted because the experiment didn't record the biomass of each species in 2004). Run the following code to view the first ten rows and five columns (columns 1 to 5): 
+First data is about the biomass of total species in each plot. And the second data (`Jena_species_biomass_data`) about the biomass of each species in each plot. It is a list including 76 time series biomass dataframes by considering all plots. Each dataframe includes the species (as rows) in the plot, and 16-years biomass of each species (as columns) in each plot. 
+
+For this dataset, it mainly use for multiple communities analysis. And for single community analysis, we can just combines 76 time series biomass dataframes. Run the following code for the data `Jena_species_biomass_data` to view the first ten rows and five columns (columns 1 to 5) of data using for single community analysis. And view the first five columns (columns 1 to 5) in the first dataframe (B1A01_B1_16) of data using for multiple communities analysis.
 
 ```{r, eval=F}
-data("Jena_hierarchical_data")
-head(round(Jena_hierarchical_data[,1:5],2), 10)
+data("Jena_species_biomass_data")
+single_species <- do.call(rbind, Jena_species_biomass_data)
+head(round(single_species[,1:5],2), 10)
 ```
 
 ```{r, echo=F}
-data("Jena_hierarchical_data")
-head(round(Jena_hierarchical_data[,1:5],2), 10)
+data("Jena_species_biomass_data")
+single_species <- do.call(rbind, Jena_species_biomass_data)
+head(round(single_species[,1:5],2), 10)
+```
+
+```{r, eval=F}
+data("Jena_species_biomass_data")
+multiple_species <- Jena_species_biomass_data
+head(round(multiple_species[[1]][,1:5],2), 10)
+```
+
+```{r, echo=F}
+data("Jena_species_biomass_data")
+multiple_species <- Jena_species_biomass_data
+head(round(multiple_species[[1]][,1:5],2), 10)
+```
+
+
+For hierarchical analysis, we also use the biomass of each species in every plot to construct hierarchical structure with four levels (Overall area, Block, Plot and Species). The second dataset (`Jena_hierarchical_biomass_data`) is the biomass data for hierarchical analysis, including all species in each plot (as columns) and 16-years biomass (as rows) of each species (year 2004 is deducted because the experiment didn't record the biomass of each species in 2004). Run the following code to view the first ten rows and five columns (columns 1 to 5): 
+
+```{r, eval=F}
+data("Jena_hierarchical_biomass_data")
+head(round(Jena_hierarchical_biomass_data[,1:5],2), 10)
+```
+
+```{r, echo=F}
+data("Jena_hierarchical_biomass_data")
+head(round(Jena_hierarchical_biomass_data[,1:5],2), 10)
 ```
 
 
 #### Structure matrix for hierarchies
 
-For `Jena_hierarchical_data` biomass dataset, there is a corresponding structure matrix, called `Jena_hierarchical_mat`. In this matrix, there are three columns for each hierarchical levels from high to low level (except overall area), which are "Block", "Plot" and "Species". And The rows in the matrix is corresponding to each row in biomass dataset, that is each row in matrix describing the category to which each row of biomass data belongs at each hierarchical level. Run the following code to view the first ten rows: 
+For `Jena_hierarchical_biomass_data` biomass dataset, there is a corresponding structure matrix, called `Jena_hierarchical_mat`. In this matrix, there are three columns for each hierarchical levels from high to low level (except overall area), which are "Block", "Plot" and "Species". And The rows in the matrix is corresponding to each row in biomass dataset, that is each row in matrix describing the category to which each row of biomass data belongs at each hierarchical level. Run the following code to view the first ten rows: 
 
 ```{r, eval=F}
 data("Jena_hierarchical_mat")
@@ -168,22 +197,22 @@ head(Jena_hierarchical_mat, 10)
 ```
 
 
-## Computing stability in a single community with plotting stability-profile and relationship between stability and diversity variable. 
+## Computing plot stability in a single plot with plotting plot stability-profile and relationship between plot stability and diversity variable. 
 
-Based on biomass data, `Stab_Single()` computes stability of each community for the set order q. And `ggStab_Syn_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stab_Single()`, can use `ggStab_Syn_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 17-years biomass of only two plots "B1A21" and "B2A15" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 17-years biomass of all 76 plots. 
+Based on biomass data, `Stay_Single()` computes stability of each community (plot) for the set order q. And `ggStay_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stay_Single()`, can use `ggStay_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 17-years biomass of only two plots "B1A21" and "B2A15" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 17-years biomass of all 76 plots. 
 
 Run the following code to view the first ten rows of the output:
 
 ```{r, eval=F}
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single_q <- Stab_Single(data=single_data[c(12,38),],
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
+output_single_q <- Stay_Single(data=single_plot[c(12,38),],
                                order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(output_single_q, 10)
 ```
 
 ```{r, echo=F}
-single_data <- do.call(rbind, Jena_experiment_plant_data)
-output_single_q <- Stab_Single(data=single_data[c(12,38),],
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
+output_single_q <- Stay_Single(data=single_plot[c(12,38),],
                                order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(output_single_q, 10)
 ```
@@ -193,13 +222,13 @@ The above output includes the name of plot or community (`Plot/Community`), `Ord
 Run the following code to obtain stability-profile:
 
 ```{r, fig.align='center'}
-ggStab_Syn_qprofile(output=output_single_q)
+ggStay_qprofile(output=output_single_q)
 ```
 
-Run the following code to obtain diversity-stability relationship. Need to combine the diversity information to output of `Stab_Single()` first (following only shows the first ten rows). 
+Run the following code to obtain diversity-plot stability relationship. Need to combine the diversity information to output of `Stay_Single()` first (following only shows the first ten rows). 
 
 ```{r, eval=FALSE}
-output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+output_single_div <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 output_single_div <- data.frame(output_single_div,
                                 sowndiv=as.numeric(do.call(rbind,
                                                    strsplit(output_single_div[,1],"[._]+"))[,2]),
@@ -209,7 +238,7 @@ head(output_single_div, 10)
 ```
 
 ```{r, echo=FALSE}
-output_single_div <- Stab_Single(data=single_data, order.q=c(1,2), Alltime=TRUE)
+output_single_div <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 output_single_div <- data.frame(output_single_div,
                                 sowndiv=as.numeric(do.call(rbind,
                                                    strsplit(output_single_div[,1],"[._]+"))[,2]),
@@ -219,61 +248,177 @@ head(output_single_div, 10)
 ```
 
 ```{r,fig.width = 7}
-ggStab_Syn_analysis(output=output_single_div, x_variable="sowndiv", 
-                    by_group="block", model="LMM")
+ggStay_analysis(output=output_single_div, x_variable="sowndiv", 
+                by_group="block", model="LMM")
 ```
 
 
+## Computing plot stability in multiple plots with plotting plot stability-profile and relationship between plot stability and diversity variable. 
 
-## Computing stability in multiple community with plotting stability-profile and relationship between stability and diversity variable. 
-
-Based on biomass data, `Stab_Syn_Multiple()` computes stability of each community for the set order q. And `ggStab_Syn_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stab_Single()`, can use `ggStab_Syn_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 17-years biomass of only two groups of multiple communities "B2_2" and "B3_16" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 17-years biomass of all 20 groups of multiple communities. 
+Based on biomass data, `Stay_Multiple()` computes plot stability of each group of multiple communities (plots) for the set order q. And `ggStay_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stay_Single()`, can use `ggStay_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 17-years biomass of only two groups of multiple communities (plots) "B2_2" and "B3_16" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 17-years biomass of all 20 groups of multiple communities (plots). 
 
 Run the following code to view the first ten rows of the output:
 
 ```{r, eval=F}
-multiple_data <- Jena_experiment_plant_data
-output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
-                                    order.q=seq(0.1,2,0.1), Alltime=TRUE)
+multiple_plot <- Jena_plot_biomass_data
+output_multi_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
+                                order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(output_multi_q, 10)
 ```
 
 ```{r, echo=F}
-multiple_data <- Jena_experiment_plant_data
-output_multi_q <- Stab_Syn_Multiple(data=multiple_data[c(9,11)],
+multiple_plot <- Jena_plot_biomass_data
+output_multi_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(output_multi_q, 10)
 ```
 
 The above output includes the name of group of multiple communities (`Place`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
-Run the following code to obtain stability-profile:
+Run the following code to obtain plot stability and synchorny profile:
 
 ```{r, fig.align='center', fig.width = 7, fig.height = 4.5}
-ggStab_Syn_qprofile(output=output_multi_q)
+ggStay_qprofile(output=output_multi_q)
 ```
 
-Run the following code to obtain diversity-stability relationship. Need to combine the diversity information to output of `Stab_Syn_Multiple()` first (following only shows the first ten rows). 
+Run the following code to obtain diversity-plot stability relationship. Need to combine the diversity information to output of `Stay_Multiple()` first (following only shows the first ten rows). 
 
 ```{r, eval=FALSE}
-output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+output_multi_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
                                block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 head(output_multi_div, 10)
 ```
 
 ```{r, echo=FALSE}
-output_multi_div <- Stab_Syn_Multiple(data=multiple_data, order.q=c(1,2), Alltime=TRUE)
+output_multi_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
                                block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
 head(cbind(output_multi_div[,1:2], round(output_multi_div[3:6],3), output_multi_div[,7:8]), 10)
 ```
 
 ```{r,fig.width = 7, fig.height=6.5}
-ggStab_Syn_analysis(output=output_multi_div, x_variable="sowndiv", 
+ggStay_analysis(output=output_multi_div, x_variable="sowndiv", 
                     by_group="block", model="LMM")
 ```
 
+
+Above examples use the data about biomass of total species in each plot (`Jena_plot_biomass_data`) to calculate plot stability. Following example use the data about biomass of each species in each plot (`Jena_species_biomass_data`) to calculate species stability. 
+
+## Computing species stability in a single species in each plot with plotting species stability-profile and relationship between species stability and diversity variable. 
+
+Based on biomass data, `Stay_Single()` computes stability of each species in each plot for the set order q. And `ggStay_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stay_Single()`, can use `ggStay_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 16-years biomass of only two species in B1A06, which are "Ant.odo" and "Cam.pat" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 16-years biomass of all 462 species (each species in each plot). 
+
+Run the following code to view the first ten rows of the output:
+
+```{r, eval=F}
+single_species <- do.call(rbind, Jena_species_biomass_data)
+output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
+                                       order.q=seq(0.1,2,0.1), Alltime=TRUE)
+head(output_single_species_q, 10)
+```
+
+```{r, echo=F}
+single_species <- do.call(rbind, Jena_species_biomass_data)
+output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
+                                       order.q=seq(0.1,2,0.1), Alltime=TRUE)
+head(output_single_species_q, 10)
+```
+
+The above output includes the name of plot or community (`Plot/Community`), `Order_q` and stability of each plot or community (`Stability`).
+
+Run the following code to obtain stability-profile:
+
+```{r, fig.align='center'}
+ggStay_qprofile(output=output_single_species_q)
+```
+
+Run the following code to obtain diversity-plot stability relationship. Need to combine the diversity information to output of `Stay_Single()` first (following only shows the first ten rows). 
+
+```{r, eval=FALSE}
+output_single_species_div <- Stay_Single(data=single_species,
+                                         order.q=c(1,2), Alltime=TRUE)
+output_single_species_div <- data.frame(output_single_species_div,
+                              sowndiv=as.numeric(do.call(rbind,
+                                      strsplit(output_single_species_div[,1],"[._]+"))[,3]),
+                              block=do.call(rbind,
+                                    strsplit(output_single_species_div[,1],"[._]+"))[,2])
+head(output_single_species_div, 10)
+```
+
+```{r, echo=FALSE}
+output_single_species_div <- Stay_Single(data=single_species,
+                                         order.q=c(1,2), Alltime=TRUE)
+output_single_species_div <- data.frame(output_single_species_div,
+                              sowndiv=as.numeric(do.call(rbind,
+                                      strsplit(output_single_species_div[,1],"[._]+"))[,3]),
+                              block=do.call(rbind,
+                                    strsplit(output_single_species_div[,1],"[._]+"))[,2])
+head(output_single_species_div, 10)
+```
+
+```{r,fig.width = 7}
+ggStay_analysis(output=output_single_species_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
+```
+
+
+## Computing species stability in multiple species with plotting species stability-profile and relationship between species stability and diversity variable. 
+
+Based on biomass data, `Stay_Multiple()` computes species stability of multiple species in each plot for the set order q. And `ggStay_qprofile()` provides to plot stability-profile. If combine the diversity information to output of `Stay_Single()`, can use `ggStay_analysis()` to plot the relationship between stability and diversity information. For stability-profile, following sets order q from 0.1 to 2.0 in increments of 0.1, and uses 16-years biomass of only two plots of multiple species "B4A07_B4_4" and "B4A15_B4_2" to avoid too complicated graph; For diversity-stability relationship, following use the default setting of order q (q = 1 and q = 2) and use 16-years biomass of all 76 groups (plots) of multiple species. 
+
+Run the following code to view the first ten rows of the output:
+
+```{r, eval=F}
+multiple_species <- Jena_species_biomass_data
+output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
+                                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
+head(output_multi_species_q, 10)
+```
+
+```{r, echo=F}
+multiple_species <- Jena_species_biomass_data
+output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
+                                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
+head(output_multi_species_q, 10)
+```
+
+The above output includes the name of group of multiple communities (`Place`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
+
+Run the following code to obtain plot stability and synchorny profile:
+
+```{r, fig.align='center', fig.width = 7, fig.height = 4.5}
+ggStay_qprofile(output=output_multi_species_q)
+```
+
+Run the following code to obtain diversity-plot stability relationship. Need to combine the diversity information to output of `Stay_Multiple()` first (following only shows the first ten rows). 
+
+```{r, eval=FALSE}
+output_multi_species_div <- Stay_Multiple(data=multiple_species,
+                                          order.q=c(1,2), Alltime=TRUE)
+output_multi_species_div <- data.frame(output_multi_species_div,
+                             sowndiv=as.numeric(do.call(rbind,
+                                     strsplit(output_multi_species_div[,1],"_"))[,3]),
+                             block=do.call(rbind,
+                                   strsplit(output_multi_species_div[,1],"_"))[,2])
+head(output_multi_species_div, 10)
+```
+
+```{r, echo=FALSE}
+output_multi_species_div <- Stay_Multiple(data=multiple_species,
+                                          order.q=c(1,2), Alltime=TRUE)
+output_multi_species_div <- data.frame(output_multi_species_div,
+                             sowndiv=as.numeric(do.call(rbind,
+                                     strsplit(output_multi_species_div[,1],"_"))[,3]),
+                             block=do.call(rbind,
+                                   strsplit(output_multi_species_div[,1],"_"))[,2])
+head(output_multi_species_div, 10)
+```
+
+```{r,fig.width = 7, fig.height=6.5}
+ggStay_analysis(output=output_multi_species_div, x_variable="sowndiv",
+                    by_group="block", model="LMM")
+```
 
 ## Computing stability of hierarchical strucuture with plotting stability-profile. 
 
@@ -282,27 +427,32 @@ Based on biomass data and structure matrix, `Stab_Hier()` computes stability of 
 Run the following code to view the first ten rows of the output:
 
 ```{r, eval=F}
-data("Jena_hierarchical_data")
+data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
-output_hier_q <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
-                         order.q=seq(0.1,2,0.1), Alltime=TRUE)
+output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
+                           order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(output_hier_q, 10)
 ```
 
 ```{r, echo=F}
-data("Jena_hierarchical_data")
+data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
-output_hier_q <- Stab_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
-                         order.q=seq(0.1,2,0.1), Alltime=TRUE)
+output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
+                           order.q=seq(0.1,2,0.1), Alltime=TRUE)
 head(cbind(output_hier_q[,1:2], round(output_hier_q[,3:5],3)), 10)
 ```
 
-The above output includes the hierarchical level (`Hier`), `Order_q`, stability of each hierarchical level (`Gamma`, `Alpha`, `Beta (normalized)` stability).
+The above output includes the hierarchical level (`Hier`), `Order_q`, stability of each hierarchical level (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
-Run the following code to obtain stability-profile:
+Run the following code to obtain hierarchical stability-profile, and the ratio for the decomposition of overall stability and synchrony of each hierarchical level: 
+
+```{r, fig.align='left', fig.width = 5, fig.height = 4.5}
+hierplot <- ggStay_qprofile(output=output_hier_q)
+hierplot[[1]]
+```
 
 ```{r, fig.align='left', fig.width = 7.5, fig.height = 4.5}
-ggStab_Syn_qprofile(output=output_hier_q)
+hierplot[[2]]
 ```
 
 
