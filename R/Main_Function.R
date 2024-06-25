@@ -704,7 +704,8 @@ ggStay_qprofile <- function(output){
       plotout[[2]] <- ggarrange(plotout3, plotout4, ncol = 2)
     }else{
       # plotout <- ggarrange(plotout1, plotout2, ncol = 2)
-      plotout <- plotout1
+      plotout <- list()
+      plotout[[1]] <- plotout1
     }
 
   }else{
