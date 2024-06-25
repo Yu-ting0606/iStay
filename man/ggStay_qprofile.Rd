@@ -18,20 +18,20 @@ For a \code{Stay_Hier} object, this function return a figure that contains q-pro
 \code{ggStay_qprofile} is a graphical function that based on the output from the function \code{Stay_Single}, \code{Stay_Multiple} or \code{Stay_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
 }
 \examples{
-data("Jena_plot_biomass")
-data("Jena_species_biomass")
-data("Jena_hierarchical_data")
+data("Jena_plot_biomass_data")
+data("Jena_species_biomass_data")
+data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
 
 ## Single assemblage
 # Stability of each single plot
-single_plot <- do.call(rbind, Jena_plot_biomass)
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
 output_single_plot_q <- Stay_Single(data=single_plot[c(12,38),],
                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStay_qprofile(output=output_single_plot_q)
 
 # Stability of each single species
-single_species <- do.call(rbind, Jena_species_biomass)
+single_species <- do.call(rbind, Jena_species_biomass_data)
 output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
                                        order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStay_qprofile(output=output_single_species_q)
@@ -39,20 +39,21 @@ ggStay_qprofile(output=output_single_species_q)
 
 ## Multiple assemblages
 # Stability of multiple plots
-multiple_plot <- Jena_plot_biomass
+multiple_plot <- Jena_plot_biomass_data
 output_multi_plot_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
                                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStay_qprofile(output=output_multi_plot_q)
 
 # Stability of multiple species in plot
-multiple_species <- Jena_species_biomass
+multiple_species <- Jena_species_biomass_data
 output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
                                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStay_qprofile(output=output_multi_species_q)
 
 
 ## Hierarchies
-output_hier_q <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data,
+                           mat=Jena_hierarchical_mat,
                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
 ggStay_qprofile(output=output_hier_q)
 

@@ -31,14 +31,14 @@ a dataframe with columns "Plot/Community", "Order_q" and "Stability".
 }
 \examples{
 # Stability of each single plot
-data("Jena_plot_biomass")
-single_plot <- do.call(rbind, Jena_plot_biomass)
+data("Jena_plot_biomass_data")
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
 output_single_plot <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 output_single_plot
 
 # Stability of each single species in each plot
-data("Jena_species_biomass")
-single_species <- do.call(rbind, Jena_species_biomass)
+data("Jena_species_biomass_data")
+single_species <- do.call(rbind, Jena_species_biomass_data)
 output_single_species <- Stay_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
 output_single_species
 

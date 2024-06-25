@@ -31,14 +31,14 @@ a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synch
 }
 \examples{
 # Stability of multiple plots
-data("Jena_plot_biomass")
-multiple_plot <- Jena_plot_biomass
+data("Jena_plot_biomass_data")
+multiple_plot <- Jena_plot_biomass_data
 output_multi_plot <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 output_multi_plot
 
 # Stability of multiple species in each plot
-data("Jena_species_biomass")
-multiple_species <- Jena_species_biomass
+data("Jena_species_biomass_data")
+multiple_species <- Jena_species_biomass_data
 output_multi_species <- Stay_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
 output_multi_species
 

@@ -34,9 +34,9 @@ a dataframe with columns "Hier", "Order_q", and stability "Gamma", "Alpha", "Bet
 }
 \examples{
 
-data("Jena_hierarchical_data")
+data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
-output_hier <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+output_hier <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
                          order.q=c(1,2), Alltime=TRUE)
 output_hier
 

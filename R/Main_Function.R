@@ -542,7 +542,8 @@ Stay_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #'
 #' ## Hierarchies
-#' output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
+#' output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data,
+#'                            mat=Jena_hierarchical_mat,
 #'                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_hier_q)
 #'

@@ -23,14 +23,14 @@ For an \code{Stay_Multiple} object, this function return a figure that is about 
 \code{ggStay_analysis} is a graphical function that based on the output from the function \code{Stay_Single} or \code{Stay_Multiple}. It provides to graph relationships between stability (and synchrony if is multiple assemblages) and an additional diversity (or other) variable .
 }
 \examples{
-data("Jena_plot_biomass")
-data("Jena_species_biomass")
-data("Jena_hierarchical_data")
+data("Jena_plot_biomass_data")
+data("Jena_species_biomass_data")
+data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
 
 ## Single assemblage
 # Stability of each single plot
-single_plot <- do.call(rbind, Jena_plot_biomass)
+single_plot <- do.call(rbind, Jena_plot_biomass_data)
 output_single_plot_div <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 output_single_plot_div <- data.frame(output_single_plot_div,
                                      sowndiv=as.numeric(do.call(rbind,
@@ -42,7 +42,7 @@ ggStay_analysis(output=output_single_plot_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 
 # Stability of each single species
-single_species <- do.call(rbind, Jena_species_biomass)
+single_species <- do.call(rbind, Jena_species_biomass_data)
 output_single_species_div <- Stay_Single(data=single_species,
                                          order.q=c(1,2), Alltime=TRUE)
 output_single_species_div <- data.frame(output_single_species_div,
@@ -57,7 +57,7 @@ ggStay_analysis(output=output_single_species_div, x_variable="sowndiv",
 
 ## Multiple assemblages
 # Stability of multiple plots
-multiple_plot <- Jena_plot_biomass
+multiple_plot <- Jena_plot_biomass_data
 output_multi_plot_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 output_multi_plot_div <- data.frame(output_multi_plot_div, sowndiv=rep(c(16,8,4,2,1),8),
                                     block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
@@ -66,7 +66,7 @@ ggStay_analysis(output=output_multi_plot_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 
 # Stability of multiple species in plot
-multiple_species <- Jena_species_biomass
+multiple_species <- Jena_species_biomass_data
 output_multi_species_div <- Stay_Multiple(data=multiple_species,
                                               order.q=c(1,2), Alltime=TRUE)
 output_multi_species_div <- data.frame(output_multi_species_div,
