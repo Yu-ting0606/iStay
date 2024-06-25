@@ -14,14 +14,14 @@
 #'
 #' @examples
 #' # Stability of each single plot
-#' data("Jena_plot_biomass")
-#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' data("Jena_plot_biomass_data")
+#' single_plot <- do.call(rbind, Jena_plot_biomass_data)
 #' output_single_plot <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_single_plot
 #'
 #' # Stability of each single species in each plot
-#' data("Jena_species_biomass")
-#' single_species <- do.call(rbind, Jena_species_biomass)
+#' data("Jena_species_biomass_data")
+#' single_species <- do.call(rbind, Jena_species_biomass_data)
 #' output_single_species <- Stay_Single(data=single_species, order.q=c(1,2), Alltime=TRUE)
 #' output_single_species
 #'
@@ -102,14 +102,14 @@ Stay_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #'
 #' @examples
 #' # Stability of multiple plots
-#' data("Jena_plot_biomass")
-#' multiple_plot <- Jena_plot_biomass
+#' data("Jena_plot_biomass_data")
+#' multiple_plot <- Jena_plot_biomass_data
 #' output_multi_plot <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_plot
 #'
 #' # Stability of multiple species in each plot
-#' data("Jena_species_biomass")
-#' multiple_species <- Jena_species_biomass
+#' data("Jena_species_biomass_data")
+#' multiple_species <- Jena_species_biomass_data
 #' output_multi_species <- Stay_Multiple(data=multiple_species, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_species
 #'
@@ -307,9 +307,9 @@ Stay_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_
 #'
 #' @examples
 #'
-#' data("Jena_hierarchical_data")
+#' data("Jena_hierarchical_biomass_data")
 #' data("Jena_hierarchical_mat")
-#' output_hier <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#' output_hier <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
 #'                          order.q=c(1,2), Alltime=TRUE)
 #' output_hier
 #'
@@ -508,20 +508,20 @@ Stay_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #'
 #' @examples
-#' data("Jena_plot_biomass")
-#' data("Jena_species_biomass")
-#' data("Jena_hierarchical_data")
+#' data("Jena_plot_biomass_data")
+#' data("Jena_species_biomass_data")
+#' data("Jena_hierarchical_biomass_data")
 #' data("Jena_hierarchical_mat")
 #'
 #' ## Single assemblage
 #' # Stability of each single plot
-#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' single_plot <- do.call(rbind, Jena_plot_biomass_data)
 #' output_single_plot_q <- Stay_Single(data=single_plot[c(12,38),],
 #'                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_single_plot_q)
 #'
 #' # Stability of each single species
-#' single_species <- do.call(rbind, Jena_species_biomass)
+#' single_species <- do.call(rbind, Jena_species_biomass_data)
 #' output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
 #'                                        order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_single_species_q)
@@ -529,20 +529,20 @@ Stay_Hier <- function(data, mat, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end
 #'
 #' ## Multiple assemblages
 #' # Stability of multiple plots
-#' multiple_plot <- Jena_plot_biomass
+#' multiple_plot <- Jena_plot_biomass_data
 #' output_multi_plot_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
 #'                                          order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_multi_plot_q)
 #'
 #' # Stability of multiple species in plot
-#' multiple_species <- Jena_species_biomass
+#' multiple_species <- Jena_species_biomass_data
 #' output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
 #'                                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_multi_species_q)
 #'
 #'
 #' ## Hierarchies
-#' output_hier_q <- Stay_Hier(data=Jena_hierarchical_data, mat=Jena_hierarchical_mat,
+#' output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
 #'                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
 #' ggStay_qprofile(output=output_hier_q)
 #'
@@ -763,14 +763,14 @@ ggStay_qprofile <- function(output){
 #' For an \code{Stay_Multiple} object, this function return a figure that is about diversity (or other) variable vs. (Gamma, Alpha, Beta) stability and synchrony.
 #'
 #' @examples
-#' data("Jena_plot_biomass")
-#' data("Jena_species_biomass")
-#' data("Jena_hierarchical_data")
+#' data("Jena_plot_biomass_data")
+#' data("Jena_species_biomass_data")
+#' data("Jena_hierarchical_biomass_data")
 #' data("Jena_hierarchical_mat")
 #'
 #' ## Single assemblage
 #' # Stability of each single plot
-#' single_plot <- do.call(rbind, Jena_plot_biomass)
+#' single_plot <- do.call(rbind, Jena_plot_biomass_data)
 #' output_single_plot_div <- Stay_Single(data=single_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_single_plot_div <- data.frame(output_single_plot_div,
 #'                                      sowndiv=as.numeric(do.call(rbind,
@@ -782,7 +782,7 @@ ggStay_qprofile <- function(output){
 #'                     by_group="block", model="LMM")
 #'
 #' # Stability of each single species
-#' single_species <- do.call(rbind, Jena_species_biomass)
+#' single_species <- do.call(rbind, Jena_species_biomass_data)
 #' output_single_species_div <- Stay_Single(data=single_species,
 #'                                          order.q=c(1,2), Alltime=TRUE)
 #' output_single_species_div <- data.frame(output_single_species_div,
@@ -797,7 +797,7 @@ ggStay_qprofile <- function(output){
 #'
 #' ## Multiple assemblages
 #' # Stability of multiple plots
-#' multiple_plot <- Jena_plot_biomass
+#' multiple_plot <- Jena_plot_biomass_data
 #' output_multi_plot_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 #' output_multi_plot_div <- data.frame(output_multi_plot_div, sowndiv=rep(c(16,8,4,2,1),8),
 #'                                     block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
@@ -806,7 +806,7 @@ ggStay_qprofile <- function(output){
 #'                     by_group="block", model="LMM")
 #'
 #' # Stability of multiple species in plot
-#' multiple_species <- Jena_species_biomass
+#' multiple_species <- Jena_species_biomass_data
 #' output_multi_species_div <- Stay_Multiple(data=multiple_species,
 #'                                               order.q=c(1,2), Alltime=TRUE)
 #' output_multi_species_div <- data.frame(output_multi_species_div,
