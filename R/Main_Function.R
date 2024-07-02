@@ -611,11 +611,7 @@ ggStay_qprofile <- function(output){
                   theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
                         plot.margin = unit(c(1,1,1,1), "cm"),
                         legend.key.size = unit(0.8, 'cm'),
-                        legend.text = element_text(size=12),legend.position="bottom")
-
-    if(length(type_name)+1>=4){
-      plotout1 <- plotout1 + guides(color=guide_legend(nrow=2,byrow=TRUE))
-    }
+                        legend.text = element_text(size=12))
 
     # plotdat2$Synchrony <- 1-plotdat2$Diff
     # plotout2 <- ggplot(data=plotdat2, aes(x=Order_q, y=Synchrony, color=type))+

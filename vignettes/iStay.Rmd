@@ -439,7 +439,7 @@ data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
 output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
-head(cbind(output_hier_q[,1:2], round(output_hier_q[,3:5],3)), 10)
+head(cbind(output_hier_q[,1:2], round(output_hier_q[,3:6],3)), 10)
 ```
 
 The above output includes the hierarchical level (`Hier`), `Order_q`, stability of each hierarchical level (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
