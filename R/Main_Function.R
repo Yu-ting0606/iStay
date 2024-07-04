@@ -98,7 +98,7 @@ Stay_Single <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_T=
 #' @param end_T (argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.
 #'
 #'
-#' @return a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
+#' @return a dataframe with columns "Site", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
 #'
 #' @examples
 #' # Stability of multiple plots
@@ -256,7 +256,7 @@ Stay_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_
       subdata <- data[,c(start_T:end_T)]
     }
     out <- as.matrix(sapply(order.q, function(qq) c(Stabillity_Multiple(subdata,q=qq), Synchrony(subdata,q=qq))))
-    result <- data.frame(Place=rep(1, length(order.q)),
+    result <- data.frame(Site=rep(1, length(order.q)),
                          Order_q=order.q, t(out))
     colnames(result)[3:7] <- c("Stab_Gamma", "Stab_Alpha", "Stab_Beta_multiplicative", "Stab_Beta_additive", "Synchrony")
     # revise_0605
@@ -279,12 +279,12 @@ Stay_Multiple <- function(data, order.q=c(1,2), Alltime=TRUE, start_T=NULL, end_
                             return(result)
                           })
                   cal2 <- do.call(rbind, cal)
-                  calcal <- data.frame(Place=names(data), cal2)
+                  calcal <- data.frame(Site=names(data), cal2)
                   return(calcal)
            })
     result <- do.call(rbind, out)
   }
-  colnames(result) <- c("Place", "Order_q", "Gamma", "Alpha", "Beta", "Synchrony")
+  colnames(result) <- c("Site", "Order_q", "Gamma", "Alpha", "Beta", "Synchrony")
   return(result)
 
 }
@@ -565,7 +565,7 @@ ggStay_qprofile <- function(output){
       outtype <- "hier"
     }
   }else{
-    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
+    if(length(which(colnames(output)=="Site"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
        | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stay_Single", "Stay_Multiple" or "Stay_Hier" function.')
@@ -574,7 +574,19 @@ ggStay_qprofile <- function(output){
     }
   }
 
+
   if(outtype=="single"){
+
+    # Check if the number of unique 'Assemblage' is 4 or less
+    if (length(unique(output$`Plot/Community`)) <= 4){
+      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+    }else{
+      # If there are more than 4 assemblages, start with the same predefined color palette
+      # Then extend the palette by generating additional colors using the 'ggplotColors' function
+      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+                     ggplotColors(length(unique(output$`Plot/Community`))-4))
+    }
+
     output$`Plot/Community` <- factor(output$`Plot/Community`, levels=unique(output$`Plot/Community`))
 
     plotout <- ggplot(data=output, aes(x=Order_q, y=Stability, color=`Plot/Community`))+
@@ -582,6 +594,7 @@ ggStay_qprofile <- function(output){
       ylab(label="Stability")+
       xlab(label="Order of q")+
       labs(color="Plot/Community")+ theme_bw()+
+      scale_colour_manual(values = cbPalette) +
       theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
             legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
 
@@ -603,10 +616,22 @@ ggStay_qprofile <- function(output){
     #                        type = rep(type_diff, each=length(qq)))
     # plotdat2$type <- factor(plotdat2$type, levels=type_diff)
 
+
+    # Check if the number of unique 'Assemblage' is 4 or less
+    if (length(unique(plotdat1$type)) <= 4){
+      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+    }else{
+      # If there are more than 4 assemblages, start with the same predefined color palette
+      # Then extend the palette by generating additional colors using the 'ggplotColors' function
+      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+                     ggplotColors(length(unique(plotdat1$type))-4))
+    }
+
     plotout1 <- ggplot(data=plotdat1, aes(x=Order_q, y=Stability, color=type))+
                   geom_line(linewidth=1.2)+
                   ylab("Hierarchical Stability")+
                   labs(color="")+
+                  scale_colour_manual(values = cbPalette) +
                   theme_bw()+
                   theme(axis.text=element_text(size=10), axis.title=element_text(size=16),
                         plot.margin = unit(c(1,1,1,1), "cm"),
@@ -658,10 +683,21 @@ ggStay_qprofile <- function(output){
       plotdat_q12$Hier <- factor(plotdat_q12$Hier, levels=label_names)
       plotdat_q12$Order_q <- as.factor(plotdat_q12$Order_q)
 
+      # Check if the number of unique 'Assemblage' is 4 or less
+      if (length(unique(plotdat_q12$Hier)) <= 4){
+        cbPalette2 <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      }else{
+        # If there are more than 4 assemblages, start with the same predefined color palette
+        # Then extend the palette by generating additional colors using the 'ggplotColors' function
+        cbPalette2 <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+                       ggplotColors(length(unique(plotdat_q12$Hier))-4))
+      }
+
       plotout3 <- ggplot(data=plotdat_q12, aes(x=Order_q, y=percent, fill=Hier))+
         geom_bar(stat="identity", width = 0.5)+
         ylab(label="Stability (% of total)")+
         labs(fill = "Hierarchical level")+theme_bw()+
+        scale_fill_manual(values = cbPalette2) +
         theme(axis.text=element_text(size=10), axis.title=element_text(size=13))
 
 
@@ -687,10 +723,21 @@ ggStay_qprofile <- function(output){
       plotdat_q12_2$Hier <- factor(plotdat_q12_2$Hier, levels=label_names2)
       plotdat_q12_2$Order_q <- as.factor(plotdat_q12_2$Order_q)
 
+      # Check if the number of unique 'Assemblage' is 4 or less
+      if (length(unique(plotdat_q12_2$Hier)) <= 4){
+        cbPalette3 <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      }else{
+        # If there are more than 4 assemblages, start with the same predefined color palette
+        # Then extend the palette by generating additional colors using the 'ggplotColors' function
+        cbPalette3 <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+                        ggplotColors(length(unique(plotdat_q12_2$Hier))-4))
+      }
+
       plotout4 <- ggplot(data=plotdat_q12_2, aes(x=Order_q, y=percent, fill=Hier))+
         geom_bar(stat="identity", width = 0.5)+
         ylab(label="Synchrony (% of total)")+
         labs(fill = "Hierarchical level")+theme_bw()+
+        scale_fill_manual(values = cbPalette3) +
         theme(axis.text=element_text(size=10), axis.title=element_text(size=13))
     }
 
@@ -706,30 +753,41 @@ ggStay_qprofile <- function(output){
     }
 
   }else{
-    output$Place <- factor(output$Place, levels=unique(output$Place))
+    output$Site <- factor(output$Site, levels=unique(output$Site))
 
     # plotout <- list()
-    stab_plotdat <- data.frame(Place=rep(output$Place,4),
+    stab_plotdat <- data.frame(Site=rep(output$Site,4),
                                Order_q=rep(output$Order_q,4),
                                value=c(output$Gamma,output$Alpha,output$Beta,output$Synchrony),
                                type=rep(c("Gamma","Alpha","Beta","Synchrony"),each=nrow(output)))
     stab_plotdat$type <- factor(stab_plotdat$type, levels=c("Gamma","Alpha","Beta","Synchrony"))
 
-    plotout <- ggplot(data=stab_plotdat, aes(x=Order_q, y=value, color=Place))+
+    # Check if the number of unique 'Assemblage' is 4 or less
+    if (length(unique(stab_plotdat$Site)) <= 4){
+      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+    }else{
+      # If there are more than 4 assemblages, start with the same predefined color palette
+      # Then extend the palette by generating additional colors using the 'ggplotColors' function
+      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+                      ggplotColors(length(unique(stab_plotdat$Site))-4))
+    }
+
+    plotout <- ggplot(data=stab_plotdat, aes(x=Order_q, y=value, color=Site))+
       geom_line(linewidth=1.2)+
       facet_wrap(.~type, nrow=2, scales = "free")+
       ylab(label="Stability and Synchrony")+
       xlab(label="Order of q")+
-      labs(color="Place")+ theme_bw()+
+      labs(color="Site")+ theme_bw()+
+      scale_color_manual(values = cbPalette) +
       theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
             legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
             axis.title = element_text(size=16))
     #
-    #     plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Place))+
+    #     plotout[[2]] <- ggplot(data=output, aes(x=Order_q, y=Synchrony, color=Site))+
     #                       geom_line(linewidth=1.2)+
     #                       ylab(label="Synchrony")+
     #                       xlab(label="Order of q")+
-    #                       labs(color="Place")+ theme_bw()+
+    #                       labs(color="Site")+ theme_bw()+
     #                       theme(legend.title = element_text(size=13), legend.text = element_text(size=12),
     #                             legend.key.size = unit(0.8, 'cm'), axis.title = element_text(size=16))
   }
@@ -827,7 +885,7 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
       stop('Please put the complete output of "Stay_Single" or "Stay_Multiple" function.')
     }
   }else{
-    if(length(which(colnames(output)=="Place"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
+    if(length(which(colnames(output)=="Site"))==0 | length(which(colnames(output)=="Order_q"))==0 | length(which(colnames(output)=="Gamma"))==0
        | length(which(colnames(output)=="Alpha"))==0 | length(which(colnames(output)=="Beta"))==0　
        | length(which(colnames(output)=="Synchrony"))==0){
       stop('Please put the complete output of "Stay_Single" or "Stay_Multiple" function.')
@@ -897,10 +955,21 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     if(is.null(by_group)==FALSE){
 
+      # Check if the number of unique 'Assemblage' is 4 or less
+      if (length(unique(plotdata$Gvariable)) <= 4){
+        cbPalette <- c("#EA0000","#73BF00","#0066CC","#FFAF60")
+      }else{
+        # If there are more than 4 assemblages, start with the same predefined color palette
+        # Then extend the palette by generating additional colors using the 'ggplotColors' function
+        cbPalette <- c(c("#EA0000","#73BF00","#0066CC","#FFAF60"),
+                       ggplotColors(length(unique(plotdata$Gvariable))-4))
+      }
+
       plotout <- ggplot(plotdata, aes(x=Xvariable, y=Stability))+
                     geom_point(aes(color=Gvariable), size=2.7)+
                     geom_line(aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
                     scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+                    scale_color_manual(values = cbPalette)+
                     facet_wrap(.~Order_q, scales="fixed", ncol = min(5, length(unique(plotdata$Order_q))))+
                     labs(linetype="", color=by_group)+
                     xlab(label=x_variable)+
@@ -1010,7 +1079,7 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
       lm_sign[which(rownames(lm_sign)==yy),4]
     })
 
-    plotdata_Stab <- data.frame(Place = rep(plotdata$Place,4),
+    plotdata_Stab <- data.frame(Site = rep(plotdata$Site,4),
                                 Order_q = rep(plotdata$Order_q,4),
                                 Stability = c(plotdata$Gamma, plotdata$Alpha, plotdata$Beta, plotdata$Synchrony),
                                 pred = c(plotdata$pred_G, plotdata$pred_A, plotdata$pred_BA, plotdata$pred_S),
@@ -1051,10 +1120,21 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
     if(is.null(by_group)==FALSE){
 
+      # Check if the number of unique 'Assemblage' is 4 or less
+      if (length(unique(plotdata_Stab$Gvariable)) <= 4){
+        cbPalette <- c("#EA0000","#73BF00","#0066CC","#FFAF60")
+      }else{
+        # If there are more than 4 assemblages, start with the same predefined color palette
+        # Then extend the palette by generating additional colors using the 'ggplotColors' function
+        cbPalette <- c(c("#EA0000","#73BF00","#0066CC","#FFAF60"),
+                       ggplotColors(length(unique(plotdata_Stab$Gvariable))-4))
+      }
+
       plotout1 <- ggplot(plotdata_Stab, aes(x=Xvariable, y=Stability))+
                     geom_point(aes(color=Gvariable), size=2.7)+
                     geom_line(aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
                     scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+                    scale_color_manual(values = cbPalette)+
                     facet_grid(type~Order_q, scales = "free_y")+
                     labs(linetype="", color=by_group)+
                     xlab(label=x_variable)+
@@ -1131,11 +1211,35 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
 
 
+# Generate Color Palette for ggplot2
+#
+# This function creates a color palette suitable for ggplot2 visualizations by evenly spacing colors in the HCL color space. The function ensures that the colors are well-distributed and visually distinct, making it ideal for categorical data where each category needs to be represented by a different color.
+#
+# @param g An integer indicating the number of distinct colors to generate. This value should be a positive integer, with higher values resulting in a broader range of colors.
+# @return A vector of color codes in hexadecimal format, suitable for use in ggplot2 charts and plots. The length of the vector will match the input parameter `g`.
+# @examples
+# # Generate a palette of 5 distinct colors
+# ggplotColors(5)
+#
+# # Use the generated colors in a ggplot2 chart
+# library(ggplot2)
+# df <- data.frame(x = 1:5, y = rnorm(5), group = factor(1:5))
+# ggplot(df, aes(x, y, color = group)) +
+#   geom_point() +
+#   scale_color_manual(values = ggplotColors(5))
+#
+ggplotColors <- function(g){
+  d <- 360/g # Calculate the distance between colors in HCL color space
+  h <- cumsum(c(15, rep(d,g - 1))) # Create cumulative sums to define hue values
+  hcl(h = h, c = 100, l = 65) # Convert HCL values to hexadecimal color codes
+}
+
+
 
 
 
 ## ========== no visible global function definition for R CMD check ========== ##
-utils::globalVariables(c("COLOR", "Order_q", "Place", "Stability", "Synchrony"
+utils::globalVariables(c("COLOR", "Order_q", "Site", "Stability", "Synchrony"
 ))
 
 

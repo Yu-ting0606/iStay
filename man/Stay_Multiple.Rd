@@ -24,7 +24,7 @@ Stay_Multiple(
 \item{end_T}{(argument only for \code{Alltime = FALSE}) a positive integer specifying the end column of time in (every) dataframe.}
 }
 \value{
-a dataframe with columns "Place", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
+a dataframe with columns "Site", "Order_q", "Gamma", "Alpha", "Beta" and "Synchrony".
 }
 \description{
 \code{Stay_Multiple} is a function that calculate (Gamma, Alpha and Beta) stability and synchrony of the time series data (like biomass, productivity, etc.) for multiple assemblages.
