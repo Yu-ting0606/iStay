@@ -1021,29 +1021,49 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                        ggplotColors(length(unique(plotdata$Gvariable))-4))
       }
 
-      plotout <- ggplot()+
-                    geom_point(data = plotdata, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
-                    geom_segment(data = part_fit,
-                                 aes(x=x_min, xend=x_max, y=intercept+slope*x_min, yend=intercept+slope*x_max, color=Gvariable))+
-                    geom_line(data = plotdata, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
-                    scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
-                    scale_color_manual(values = cbPalette)+
-                    facet_wrap(.~Order_q, scales="fixed", ncol = min(5, length(unique(plotdata$Order_q))))+
-                    labs(linetype="", color=by_group)+
-                    xlab(label=x_variable)+
-                    ylab(label="Stability")+ theme_bw()+
-                    geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata$Xvariable, na.rm = TRUE),
-                              y=min(plotdata$Stability, na.rm = TRUE), size=3.5, hjust=1, vjust=-3.5)+
-                    geom_text(data=plotdata_text_part,
-                              aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
-                              x=max(plotdata$Xvariable, na.rm = TRUE),
-                              y=min(plotdata$Stability, na.rm = TRUE), size=3.5,
-                              hjust=rep(c(2.1,1),4), vjust=rep(c(-1.6,-1.6,0.1,0.1),2), key_glyph=draw_key_path)+
-                    theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                          legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))+
-                    guides(linetype = guide_legend(keywidth = 2.5))
+      if(model=="LMM"){
+        plotout <- ggplot()+
+          geom_point(data = plotdata, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
+          geom_segment(data = part_fit,
+                       aes(x=x_min, xend=x_max, y=intercept+slope*x_min, yend=intercept+slope*x_max, color=Gvariable))+
+          geom_line(data = plotdata, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
+          scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+          scale_color_manual(values = cbPalette)+
+          facet_wrap(.~Order_q, scales="fixed", ncol = min(5, length(unique(plotdata$Order_q))))+
+          labs(linetype="", color=by_group)+
+          xlab(label=x_variable)+
+          ylab(label="Stability")+ theme_bw()+
+          geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
+                    x=max(plotdata$Xvariable, na.rm = TRUE),
+                    y=min(plotdata$Stability, na.rm = TRUE), size=3.5, hjust=1, vjust=-3.5)+
+          geom_text(data=plotdata_text_part,
+                    aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
+                    x=max(plotdata$Xvariable, na.rm = TRUE),
+                    y=min(plotdata$Stability, na.rm = TRUE), size=3.5,
+                    hjust=rep(c(2.1,1),4), vjust=rep(c(-1.6,-1.6,0.1,0.1),2), key_glyph=draw_key_path)+
+          theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                axis.title = element_text(size=16))+
+          guides(linetype = guide_legend(keywidth = 2.5))
+
+      }else{
+        plotout <- ggplot()+
+          geom_point(data = plotdata, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
+          geom_line(data = plotdata, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
+          scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+          scale_color_manual(values = cbPalette)+
+          facet_wrap(.~Order_q, scales="fixed", ncol = min(5, length(unique(plotdata$Order_q))))+
+          labs(linetype="", color=by_group)+
+          xlab(label=x_variable)+
+          ylab(label="Stability")+ theme_bw()+
+          geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
+                    x=max(plotdata$Xvariable, na.rm = TRUE),
+                    y=min(plotdata$Stability, na.rm = TRUE), size=5, hjust=1, vjust=0.1)+
+          theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                axis.title = element_text(size=16))+
+          guides(linetype = guide_legend(keywidth = 2.5))
+      }
 
     }else{
       plotout <- ggplot(plotdata, aes(x=Xvariable, y=Stability))+
@@ -1239,30 +1259,53 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                        ggplotColors(length(unique(plotdata_Stab$Gvariable))-4))
       }
 
-      plotout1 <- ggplot()+
-                    geom_point(data = plotdata_Stab, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
-                    geom_segment(data=part_fit,
-                                 aes(x=x_min, xend=x_max, y=intercept+slope*x_min, yend=intercept+slope*x_max, color=Gvariable))+
-                    geom_line(data = plotdata_Stab, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
-                    scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
-                    scale_color_manual(values = cbPalette)+
-                    facet_grid(type~Order_q, scales = "free_y")+
-                    labs(linetype="", color=by_group)+
-                    xlab(label=x_variable)+
-                    ylab(label="Stability and Synchrony")+ theme_bw()+
-                    geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
-                              x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
-                              y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=3.5,
-                              hjust=1, vjust=rep(c(-3.5,-3.5,4.1,-3.5),each=2))+
-                    geom_text(data=plotdata_text_part,
-                              aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
-                              x=rep(max(plotdata_Stab$Xvariable, na.rm = TRUE),32),
-                              y=rep(c(tyG, tyA, tyBA, tyS),each=8), size=3.5,
-                              hjust=rep(c(2.1,1),16), vjust=c(rep(c(-1.6,-1.6,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(0.1,0.1,-1.6,-1.6),2)), key_glyph=draw_key_path)+
-                    theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
-                          legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
-                          axis.title = element_text(size=16))+
-                    guides(linetype = guide_legend(keywidth = 2.5))
+      if(model=="LMM"){
+        plotout1 <- ggplot()+
+          geom_point(data = plotdata_Stab, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
+          geom_segment(data=part_fit,
+                       aes(x=x_min, xend=x_max, y=intercept+slope*x_min, yend=intercept+slope*x_max, color=Gvariable))+
+          geom_line(data = plotdata_Stab, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
+          scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+          scale_color_manual(values = cbPalette)+
+          facet_grid(type~Order_q, scales = "free_y")+
+          labs(linetype="", color=by_group)+
+          xlab(label=x_variable)+
+          ylab(label="Stability and Synchrony")+ theme_bw()+
+          geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
+                    x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
+                    y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=3.5,
+                    hjust=1, vjust=rep(c(-3.5,-3.5,4.1,-3.5),each=2))+
+          geom_text(data=plotdata_text_part,
+                    aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
+                    x=rep(max(plotdata_Stab$Xvariable, na.rm = TRUE),32),
+                    y=rep(c(tyG, tyA, tyBA, tyS),each=8), size=3.5,
+                    hjust=rep(c(2.1,1),16), vjust=c(rep(c(-1.6,-1.6,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(0.1,0.1,-1.6,-1.6),2)), key_glyph=draw_key_path)+
+          theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                axis.title = element_text(size=16))+
+          guides(linetype = guide_legend(keywidth = 2.5))
+
+      }else{
+        plotout1 <- ggplot()+
+          geom_point(data = plotdata_Stab, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
+          geom_line(data = plotdata_Stab, aes(x=Xvariable, y=pred, linetype = sign), linewidth=1.2, color="black")+
+          scale_linetype_manual(values=c("solid","dashed"), drop = FALSE)+
+          scale_color_manual(values = cbPalette)+
+          facet_grid(type~Order_q, scales = "free_y")+
+          labs(linetype="", color=by_group)+
+          xlab(label=x_variable)+
+          ylab(label="Stability and Synchrony")+ theme_bw()+
+          geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
+                    x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
+                    y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
+                    hjust=1, vjust=rep(c(0.1,0.1,1.1,0.1),each=2))+
+          theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
+                legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
+                axis.title = element_text(size=16))+
+          guides(linetype = guide_legend(keywidth = 2.5))
+      }
+
+
 
       # plotout2 <- ggplot(plotdata, aes(x=Xvariable, y=Synchrony))+
       #               geom_point(aes(color=Gvariable), size=2.7)+
@@ -1294,7 +1337,7 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                       geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
                                 x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
                                 y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=5,
-                                hjust=1, vjust=rep(c(0.1,1.1),each=4))+
+                                hjust=1, vjust=rep(c(0.1,0.1,1.1,0.1),each=2))+
                       theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                             legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                             axis.title = element_text(size=16))+
