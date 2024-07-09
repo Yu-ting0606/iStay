@@ -1279,7 +1279,7 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                     aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
                     x=rep(max(plotdata_Stab$Xvariable, na.rm = TRUE),32),
                     y=rep(c(tyG, tyA, tyBA, tyS),each=8), size=3.5,
-                    hjust=rep(c(2.1,1),16), vjust=c(rep(c(-1.6,-1.6,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(0.1,0.1,-1.6,-1.6),2)), key_glyph=draw_key_path)+
+                    hjust=rep(c(2.1,1),16), vjust=c(rep(c(-1.6,-1.6,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(-1.6,-1.6,0.1,0.1),2)), key_glyph=draw_key_path)+
           theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                 legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                 axis.title = element_text(size=16))+
