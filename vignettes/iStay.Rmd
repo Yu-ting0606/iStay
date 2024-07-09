@@ -270,10 +270,11 @@ head(output_multi_q, 10)
 multiple_plot <- Jena_plot_biomass_data
 output_multi_q <- Stay_Multiple(data=multiple_plot[c(9,11)],
                                     order.q=seq(0.1,2,0.1), Alltime=TRUE)
+rownames(output_multi_q) <- NULL
 head(output_multi_q, 10)
 ```
 
-The above output includes the name of group of multiple communities (`Place`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
+The above output includes the name of group of multiple communities (`Site`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
 Run the following code to obtain plot stability and synchorny profile:
 
@@ -294,6 +295,7 @@ head(output_multi_div, 10)
 output_multi_div <- Stay_Multiple(data=multiple_plot, order.q=c(1,2), Alltime=TRUE)
 output_multi_div <- data.frame(output_multi_div, sowndiv=rep(c(16,8,4,2,1),8),
                                block=rep(rep(c("B1","B2","B3","B4"),each=5),2))
+rownames(output_multi_div) <- NULL
 head(cbind(output_multi_div[,1:2], round(output_multi_div[3:6],3), output_multi_div[,7:8]), 10)
 ```
 
@@ -304,8 +306,7 @@ ggStay_analysis(output=output_multi_div, x_variable="sowndiv",
 
 
 Above examples use the data about biomass of total species in each plot (`Jena_plot_biomass_data`) to calculate plot stability. Following example use the data about biomass of each species in each plot (`Jena_species_biomass_data`) to calculate species stability. 
-<<<<<<< HEAD
-=======
+
 
 ## Computing species stability in a single species in each plot with plotting species stability-profile and relationship between species stability and diversity variable. 
 
@@ -382,10 +383,11 @@ head(output_multi_species_q, 10)
 multiple_species <- Jena_species_biomass_data
 output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
                                             order.q=seq(0.1,2,0.1), Alltime=TRUE)
+rownames(output_multi_species_q) <- NULL
 head(output_multi_species_q, 10)
 ```
 
-The above output includes the name of group of multiple communities (`Place`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
+The above output includes the name of group of multiple communities (`Site`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
 Run the following code to obtain plot stability and synchorny profile:
 
@@ -414,16 +416,15 @@ output_multi_species_div <- data.frame(output_multi_species_div,
                                      strsplit(output_multi_species_div[,1],"_"))[,3]),
                              block=do.call(rbind,
                                    strsplit(output_multi_species_div[,1],"_"))[,2])
+rownames(output_multi_species_div) <- NULL
 head(output_multi_species_div, 10)
 ```
 
-```{r,fig.width = 7, fig.height=6.5}
+```{r,fig.width = 7, fig.height=7.5}
 ggStay_analysis(output=output_multi_species_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 ```
 
-## Computing stability of hierarchical strucuture with plotting stability-profile. 
->>>>>>> 2e434b189b95511b1446718a5b9ee55b9e26797b
 
 ## Computing species stability in a single species in each plot with plotting species stability-profile and relationship between species stability and diversity variable. 
 
@@ -432,7 +433,6 @@ Based on biomass data, `Stay_Single()` computes stability of each species in eac
 Run the following code to view the first ten rows of the output:
 
 ```{r, eval=F}
-<<<<<<< HEAD
 single_species <- do.call(rbind, Jena_species_biomass_data)
 output_single_species_q <- Stay_Single(data=single_species[c(40,49),],
                                        order.q=seq(0.1,2,0.1), Alltime=TRUE)
@@ -504,7 +504,7 @@ output_multi_species_q <- Stay_Multiple(data=multiple_species[c(62,70)],
 head(output_multi_species_q, 10)
 ```
 
-The above output includes the name of group of multiple communities (`Place`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
+The above output includes the name of group of multiple communities (`Site`), `Order_q`, stability and synchrony of each group of multiple communities (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
 Run the following code to obtain plot stability and synchorny profile:
 
@@ -536,7 +536,7 @@ output_multi_species_div <- data.frame(output_multi_species_div,
 head(output_multi_species_div, 10)
 ```
 
-```{r,fig.width = 7, fig.height=6.5}
+```{r,fig.width = 7, fig.height=7.5}
 ggStay_analysis(output=output_multi_species_div, x_variable="sowndiv",
                     by_group="block", model="LMM")
 ```
@@ -548,8 +548,6 @@ Based on biomass data and structure matrix, `Stay_Hier()` computes stability of 
 Run the following code to view the first ten rows of the output:
 
 ```{r, eval=F}
-=======
->>>>>>> 2e434b189b95511b1446718a5b9ee55b9e26797b
 data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
 output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
@@ -562,18 +560,14 @@ data("Jena_hierarchical_biomass_data")
 data("Jena_hierarchical_mat")
 output_hier_q <- Stay_Hier(data=Jena_hierarchical_biomass_data, mat=Jena_hierarchical_mat,
                            order.q=seq(0.1,2,0.1), Alltime=TRUE)
-<<<<<<< HEAD
 head(cbind(output_hier_q[,1:2], round(output_hier_q[,3:6],3)), 10)
-=======
-head(cbind(output_hier_q[,1:2], round(output_hier_q[,3:5],3)), 10)
->>>>>>> 2e434b189b95511b1446718a5b9ee55b9e26797b
 ```
 
 The above output includes the hierarchical level (`Hier`), `Order_q`, stability of each hierarchical level (`Gamma`, `Alpha`, `Beta` stability and `Synchrony`).
 
 Run the following code to obtain hierarchical stability-profile, and the ratio for the decomposition of overall stability and synchrony of each hierarchical level: 
 
-```{r, fig.align='left', fig.width = 5, fig.height = 4.5}
+```{r, fig.align='left', fig.width = 7, fig.height = 4.5}
 hierplot <- ggStay_qprofile(output=output_hier_q)
 hierplot[[1]]
 ```
@@ -584,3 +578,6 @@ hierplot[[2]]
 
 
 ## References
+
+Wagg, C., Roscher, C., Weigelt, A. et al. (2022) Biodiversity–stability relationships strengthen over time in a long-term grassland experiment. Nature Communications 13, 7752. https://doi.org/10.1038/s41467-022-35189-2
+
