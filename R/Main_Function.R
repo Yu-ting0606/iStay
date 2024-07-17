@@ -1021,6 +1021,33 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                        ggplotColors(length(unique(plotdata$Gvariable))-4))
       }
 
+      ### 0717 revise
+      if(length(unique(plotdata$Gvariable)) == 4){
+        hhjust1 <- 1
+        vvjust1 <- -3.5
+        hhjust2 <- rep(c(2.1,1),4)
+        vvjust2 <- rep(c(-1.7,-1.7,0.1,0.1),2)
+      }else{
+        gnum <- length(unique(plotdata$Gvariable))
+        if(gnum%%2==0){
+          create <- gnum/2
+        }else{
+          create <- (gnum + 1)/2
+        }
+        hhjust1 <- 1
+        vcreate <- 0.1+(-1.8)*c(create:0)
+        vvjust1 <- vcreate[1]
+        if(gnum%%2==1){
+          hhjust2 <- rep(c(2.1,1),create)[-length(rep(c(2.1,1),create))]
+          hhjust2 <- rep(hhjust2,2)
+          vvjust2 <- rep(vcreate[-1], each=2)[-length(rep(vcreate[-1], each=2))]
+          vvjust2 <- rep(vvjust2, 2)
+        }else{
+          hhjust2 <- rep(rep(c(2.1,1),create),2)
+          vvjust2 <- rep(rep(vcreate[-1], each=2),2)
+        }
+      }
+
       if(model=="LMM"){
         plotout <- ggplot()+
           geom_point(data = plotdata, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
@@ -1035,12 +1062,12 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
           ylab(label="Stability")+ theme_bw()+
           geom_text(data=slope_text, aes(x = -Inf, y = -Inf, label = slope),
                     x=max(plotdata$Xvariable, na.rm = TRUE),
-                    y=min(plotdata$Stability, na.rm = TRUE), size=3.5, hjust=1, vjust=-3.5)+
+                    y=min(plotdata$Stability, na.rm = TRUE), size=3.5, hjust=hhjust1, vjust=vvjust1)+
           geom_text(data=plotdata_text_part,
                     aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
                     x=max(plotdata$Xvariable, na.rm = TRUE),
                     y=min(plotdata$Stability, na.rm = TRUE), size=3.5,
-                    hjust=rep(c(2.1,1),4), vjust=rep(c(-1.6,-1.6,0.1,0.1),2), key_glyph=draw_key_path)+
+                    hjust=hhjust2, vjust=vvjust2, key_glyph=draw_key_path)+
           theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                 legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                 axis.title = element_text(size=16))+
@@ -1259,6 +1286,37 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
                        ggplotColors(length(unique(plotdata_Stab$Gvariable))-4))
       }
 
+      if(length(unique(plotdata$Gvariable)) == 4){
+        gnum <- 4
+        hhjust1 <- 1
+        vvjust1 <- rep(c(-3.5,-3.5,4.1,-3.5),each=2)
+        hhjust2 <- rep(c(2.1,1),16)
+        vvjust2 <- c(rep(c(-1.7,-1.7,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(-1.7,-1.7,0.1,0.1),2))
+      }else{
+        gnum <- length(unique(plotdata$Gvariable))
+        if(gnum%%2==0){
+          create <- gnum/2
+        }else{
+          create <- (gnum + 1)/2
+        }
+        hhjust1 <- 1
+        vcreate_1 <- 0.1+(-1.8)*c(create:0)
+        vcreate_2 <- 1.1+1.5*c(create:0)
+        vvjust1 <- rep(c(vcreate_1[1], vcreate_1[1], vcreate_2[1], vcreate_1[1]), each=2)
+        if(gnum%%2==1){
+          hhjust2 <- rep(c(2.1,1),create)[-length(rep(c(2.1,1),create))]
+          hhjust2 <- rep(hhjust2,8)
+          vvjust2_1 <- rep(vcreate_1[-1], each=2)[-length(rep(vcreate_1[-1], each=2))]
+          vvjust2_2 <- rev(rep(vcreate_2[-1], each=2))[-length(rev(rep(vcreate_2[-1], each=2)))]
+          vvjust2 <- c(rep(vvjust2_1, 4), rep(vvjust2_2, 2), rep(vvjust2_1, 2))
+        }else{
+          hhjust2 <- rep(rep(c(2.1,1),create),8)
+          vvjust2 <- c(rep(rep(vcreate_1[-1], each=2),4), rep(rep(rev(vcreate_2[-1]), each=2),2),
+                       rep(rep(vcreate_1[-1], each=2),2))
+        }
+      }
+
+
       if(model=="LMM"){
         plotout1 <- ggplot()+
           geom_point(data = plotdata_Stab, aes(x=Xvariable, y=Stability, color=Gvariable), size=2.7)+
@@ -1274,12 +1332,12 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
           geom_text(data=slope_text_Stab, aes(x = -Inf, y = -Inf, label = slope),
                     x=max(plotdata_Stab$Xvariable, na.rm = TRUE),
                     y=rep(c(tyG, tyA, tyBA, tyS),each=2), size=3.5,
-                    hjust=1, vjust=rep(c(-3.5,-3.5,4.1,-3.5),each=2))+
+                    hjust=hhjust1, vjust=vvjust1)+
           geom_text(data=plotdata_text_part,
                     aes(x = -Inf, y = -Inf, label=slope, color=Gvariable),
-                    x=rep(max(plotdata_Stab$Xvariable, na.rm = TRUE),32),
-                    y=rep(c(tyG, tyA, tyBA, tyS),each=8), size=3.5,
-                    hjust=rep(c(2.1,1),16), vjust=c(rep(c(-1.6,-1.6,0.1,0.1),4), rep(c(1.1,1.1,2.6,2.6),2), rep(c(-1.6,-1.6,0.1,0.1),2)), key_glyph=draw_key_path)+
+                    x=rep(max(plotdata_Stab$Xvariable, na.rm = TRUE),gnum*8),
+                    y=rep(c(tyG, tyA, tyBA, tyS),each=gnum*2), size=3.5,
+                    hjust=hhjust2, vjust=vvjust2, key_glyph=draw_key_path)+
           theme(strip.text = element_text(size=13), legend.title = element_text(size=13),
                 legend.text = element_text(size=12), legend.key.size = unit(0.8, 'cm'),
                 axis.title = element_text(size=16))+
