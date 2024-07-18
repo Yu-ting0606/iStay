@@ -12,7 +12,7 @@ ggStay_qprofile(output)
 \value{
 For a \code{Stay_Single} object, this function return a figure of q-profile for stability .
 For a \code{Stay_Multiple} object, this function return a figure that contains q-profile for (Gamma, Alpha, Beta) stability and synchrony.
-For a \code{Stay_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hierarchical level. If order q in \code{Stay_Hier} object has q = 1 or q = 2, it also provides a figure about the ratio for each decomposition of overall stability and the synchrony of each hierarchical level.
+For a \code{Stay_Hier} object, this function return a figure that contains q-profile for gamma stability of highest hierarchical level and alpha stability of other hierarchical level. And it also provides a figure about the relationship between each decomposition of overall stability and the synchrony of each hierarchical level and order.q.
 }
 \description{
 \code{ggStay_qprofile} is a graphical function that based on the output from the function \code{Stay_Single}, \code{Stay_Multiple} or \code{Stay_Hier}. It provides to graph the q-profile of stability (and synchrony if is multiple assemblages).
