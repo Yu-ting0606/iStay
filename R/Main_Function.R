@@ -579,11 +579,11 @@ ggStay_qprofile <- function(output){
 
     # Check if the number of unique 'Assemblage' is 4 or less
     if (length(unique(output$`Plot/Community`)) <= 4){
-      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      cbPalette <- c("#EA0000","#0066CC","#64A600","#FFA042")
     }else{
       # If there are more than 4 assemblages, start with the same predefined color palette
       # Then extend the palette by generating additional colors using the 'ggplotColors' function
-      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+      cbPalette <- c(c("#EA0000","#0066CC","#64A600","#FFA042"),
                      ggplotColors(length(unique(output$`Plot/Community`))-4))
     }
 
@@ -625,16 +625,16 @@ ggStay_qprofile <- function(output){
 
     # Check if the number of unique 'Assemblage' is 4 or less
     if (length(unique(plotdat1$type)) <= 4){
-      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      cbPalette <- c("#EA0000","#0066CC","#64A600","#FFA042")
     }else{
-      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+      cbPalette <- c(c("#EA0000","#0066CC","#64A600","#FFA042"),
                      ggplotColors(length(unique(plotdat1$type))-4))
     }
 
     if (length(unique(plotdat2$type)) <= 4){
-      cbPalette_2 <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      cbPalette_2 <- c("#EA0000","#0066CC","#64A600","#FFA042")
     }else{
-      cbPalette_2 <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+      cbPalette_2 <- c(c("#EA0000","#0066CC","#64A600","#FFA042"),
                      ggplotColors(length(unique(plotdat2$type))-4))
     }
 
@@ -792,11 +792,11 @@ ggStay_qprofile <- function(output){
 
     # Check if the number of unique 'Assemblage' is 4 or less
     if (length(unique(stab_plotdat$Site)) <= 4){
-      cbPalette <- c("#EA0000","#0066CC","#73BF00","#FFAF60")
+      cbPalette <- c("#EA0000","#0066CC","#64A600","#FFA042")
     }else{
       # If there are more than 4 assemblages, start with the same predefined color palette
       # Then extend the palette by generating additional colors using the 'ggplotColors' function
-      cbPalette <- c(c("#EA0000","#0066CC","#73BF00","#FFAF60"),
+      cbPalette <- c(c("#EA0000","#0066CC","#64A600","#FFA042"),
                       ggplotColors(length(unique(stab_plotdat$Site))-4))
     }
 
@@ -1013,11 +1013,11 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
       # Check if the number of unique 'Assemblage' is 4 or less
       if (length(unique(plotdata$Gvariable)) <= 4){
-        cbPalette <- c("#EA0000","#73BF00","#0066CC","#FFAF60")
+        cbPalette <- c("#EA0000","#64A600","#0066CC","#FFA042")
       }else{
         # If there are more than 4 assemblages, start with the same predefined color palette
         # Then extend the palette by generating additional colors using the 'ggplotColors' function
-        cbPalette <- c(c("#EA0000","#73BF00","#0066CC","#FFAF60"),
+        cbPalette <- c(c("#EA0000","#64A600","#0066CC","#FFA042"),
                        ggplotColors(length(unique(plotdata$Gvariable))-4))
       }
 
@@ -1278,11 +1278,11 @@ ggStay_analysis <- function(output, x_variable, by_group=NULL, model="LMM"){
 
       # Check if the number of unique 'Assemblage' is 4 or less
       if (length(unique(plotdata_Stab$Gvariable)) <= 4){
-        cbPalette <- c("#EA0000","#73BF00","#0066CC","#FFAF60")
+        cbPalette <- c("#EA0000","#64A600","#0066CC","#FFA042")
       }else{
         # If there are more than 4 assemblages, start with the same predefined color palette
         # Then extend the palette by generating additional colors using the 'ggplotColors' function
-        cbPalette <- c(c("#EA0000","#73BF00","#0066CC","#FFAF60"),
+        cbPalette <- c(c("#EA0000","#64A600","#0066CC","#FFA042"),
                        ggplotColors(length(unique(plotdata_Stab$Gvariable))-4))
       }
 
